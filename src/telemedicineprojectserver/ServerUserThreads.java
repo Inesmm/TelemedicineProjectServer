@@ -35,9 +35,9 @@ public class ServerUserThreads implements Runnable {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 if (line.toLowerCase().contains("stop")) {
-                    System.out.println("Stopping the server");
+                    System.out.println("Stopping the thread");
                     releaseResources(bufferedReader, socket);
-                    System.exit(0);
+                    //System.exit(0);
                 }
                 System.out.println(line);
             }
