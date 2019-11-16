@@ -20,48 +20,24 @@ public class UserInfo implements Serializable {
     private String userName;
     private int age;
     private ArrayList phydataArray;
-<<<<<<< Upstream, based on origin/master
-
-    public UserInfo(String name, String userName, String password, int age, ArrayList phydataArray) {
-        this.name = name;
-        this.password = password;
-        this.userName = userName;
-        this.age = age;
-        this.phydataArray = phydataArray;
-
-    }
-
-    public UserInfo(String name, String userName, String password, int age) {
-        this.name = name;
-        this.password = password;
-        this.userName = userName;
-        this.age = age;
-        this.phydataArray = null;
-
-    }
-
-    public UserInfo() {
-        this.name = null;
-        this.password = null;
-        this.userName = null;
-        this.age = 0;
-        this.phydataArray = null;
-
-    }
-
-    public void saveMeasure(Phydata phydata) {
-        this.phydataArray.add(phydata);
-
-=======
     private boolean checked;
 
+    public UserInfo(String name, String userName, String password, int age, ArrayList phydataArray, boolean checked) {
+        this.checked = checked;
+        this.name = name;
+        this.password = password;
+        this.userName = userName;
+        this.age = age;
+        this.phydataArray = phydataArray;
+
+    }
+
     public UserInfo(String name, String userName, String password, int age, ArrayList phydataArray) {
         this.name = name;
         this.password = password;
         this.userName = userName;
         this.age = age;
         this.phydataArray = phydataArray;
-        this.checked = false;
 
     }
 
@@ -71,7 +47,6 @@ public class UserInfo implements Serializable {
         this.userName = userName;
         this.age = age;
         this.phydataArray = null;
-        this.checked = false;
 
     }
 
@@ -81,12 +56,11 @@ public class UserInfo implements Serializable {
         this.userName = null;
         this.age = 0;
         this.phydataArray = null;
-        this.checked = false;
+
     }
 
     public void saveMeasure(Phydata phydata) {
         this.phydataArray.add(phydata);
-
     }
 
     public boolean isChecked() {
@@ -95,7 +69,6 @@ public class UserInfo implements Serializable {
 
     public void setChecked(boolean checked) {
         this.checked = checked;
->>>>>>> 2d17710 hjkhkj
     }
 
     public String getName() {
