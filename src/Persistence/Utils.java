@@ -23,6 +23,16 @@ import org.jfree.data.xy.DefaultXYDataset;*/
  * @author juanb
  */
 public final class Utils extends Object {
+    //DIRECTORY AND FILENAME WHERE TO SAVE ALL THE DATA
+
+    public static final String NEWUN = "qwerty";
+    public static final String DIRECTORY = "data";
+    public static final String FILENAME = "UserInfo.dat";
+
+    public static final String STOP = "stop";
+    public static final String VALID = "valid";
+    public static final String VALID_USERNAME = "validusername";
+    public static final String ERR = "error";
 
     /* public static void GraphPhydata(int[][] dataRec) {
         int row = dataRec.length;

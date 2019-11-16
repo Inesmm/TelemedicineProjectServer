@@ -12,6 +12,7 @@ import Persistence.Utils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -33,17 +34,42 @@ public class ServerUserThreads implements Runnable {
 
     @Override
     public void run() {
+        ArrayList<UserInfo> userInfoList = null;
         UserInfo userInfo = null;
+        String userName = null;
+        String password;
+        int age;
+        String Name = null;
         Phydata phydata = null;
         PrintWriter printWriter = null;
         InputStream inputStream = null;
+        BufferedReader bufferedReader = null;
+        InputStreamReader inputStreamReader = null;
         ObjectInputStream objectInputStream = null;
         try {
             printWriter = new PrintWriter(socket.getOutputStream(), true);
+            inputStream = socket.getInputStream();
+            objectInputStream = new ObjectInputStream(inputStream);
             try {
+                userInfoList = PersistenceOp.loadUserInfo(Utils.DIRECTORY, Utils.FILENAME);
                 System.out.println("Connection client created");
-                inputStream = socket.getInputStream();
-                objectInputStream = new ObjectInputStream(inputStream);
+                bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                if (bufferedReader.readLine().equalsIgnoreCase(Utils.NEWUN)) {
+                    userName = bufferedReader.readLine();
+                    password = bufferedReader.readLine();
+                    if (!Utils.checkUserName(userName, userInfoList)) {
+                        printWriter.println(Utils.ERR);
+                    } else {
+                        printWriter.println(Utils.VALID_USERNAME);
+                        Object tmp = (Object) objectInputStream.readObject();
+                        userInfo = (UserInfo) tmp;
+                    }
+                } else {
+                    userName = bufferedReader.readLine();
+                    password = bufferedReader.readLine();
+
+                }
+                /*objectInputStream = new ObjectInputStream(inputStream);
                 Object tmp = objectInputStream.readObject();
                 userInfo = (UserInfo) tmp;
                 if (!userInfo.isChecked()) {
@@ -58,6 +84,7 @@ public class ServerUserThreads implements Runnable {
                     }
                     userInfo.setChecked(true);
                 }
+                System.out.println("Correct");*/
 
             } catch (IOException ex) {
                 Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
