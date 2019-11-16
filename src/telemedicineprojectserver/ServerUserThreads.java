@@ -5,10 +5,17 @@
  */
 package telemedicineprojectserver;
 
+import POJOs.Phydata;
+import POJOs.UserInfo;
+import Persistence.PersistenceOp;
+import Persistence.Utils;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,29 +33,43 @@ public class ServerUserThreads implements Runnable {
 
     @Override
     public void run() {
-        BufferedReader bufferedReader = null;
+        UserInfo userInfo = null;
+        Phydata phydata = null;
+        PrintWriter printWriter = null;
+        InputStream inputStream = null;
+        ObjectInputStream objectInputStream = null;
         try {
-            System.out.println("Connection client created");
-            bufferedReader = new BufferedReader(
-                    new InputStreamReader(socket.getInputStream()));
-            System.out.println("Text Received:\n");
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                if (line.toLowerCase().contains("stop")) {
-                    System.out.println("Stopping the thread");
-                    releaseResources(bufferedReader, socket);
-                    //System.exit(0);
+            printWriter = new PrintWriter(socket.getOutputStream(), true);
+            try {
+                System.out.println("Connection client created");
+                inputStream = socket.getInputStream();
+                objectInputStream = new ObjectInputStream(inputStream);
+                Object tmp = objectInputStream.readObject();
+                userInfo = (UserInfo) tmp;
+                if (!userInfo.isChecked()) {
+                    ArrayList<UserInfo> userInfoList = PersistenceOp.loadUserInfo(PersistenceOp.DIRECTORY,
+                            PersistenceOp.FILENAME);
+                    while (!Utils.checkCorrectPassword(userInfo.getName(),
+                            userInfo.getPassword(), userInfoList)) {
+                        System.out.println("Error1: Incorrect UserInfo");
+                        printWriter.println(PersistenceOp.ERR1);
+                        tmp = objectInputStream.readObject();
+                        userInfo = (UserInfo) tmp;
+                    }
+                    userInfo.setChecked(true);
                 }
-                System.out.println(line);
+
+            } catch (IOException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+
             }
         } catch (IOException ex) {
             Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            try {
-                bufferedReader.close();
-            } catch (IOException ex) {
-                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            printWriter.close();
         }
 
     }

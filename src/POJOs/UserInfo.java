@@ -20,6 +20,7 @@ public class UserInfo implements Serializable {
     private String userName;
     private int age;
     private ArrayList phydataArray;
+<<<<<<< Upstream, based on origin/master
 
     public UserInfo(String name, String userName, String password, int age, ArrayList phydataArray) {
         this.name = name;
@@ -51,6 +52,50 @@ public class UserInfo implements Serializable {
     public void saveMeasure(Phydata phydata) {
         this.phydataArray.add(phydata);
 
+=======
+    private boolean checked;
+
+    public UserInfo(String name, String userName, String password, int age, ArrayList phydataArray) {
+        this.name = name;
+        this.password = password;
+        this.userName = userName;
+        this.age = age;
+        this.phydataArray = phydataArray;
+        this.checked = false;
+
+    }
+
+    public UserInfo(String name, String userName, String password, int age) {
+        this.name = name;
+        this.password = password;
+        this.userName = userName;
+        this.age = age;
+        this.phydataArray = null;
+        this.checked = false;
+
+    }
+
+    public UserInfo() {
+        this.name = null;
+        this.password = null;
+        this.userName = null;
+        this.age = 0;
+        this.phydataArray = null;
+        this.checked = false;
+    }
+
+    public void saveMeasure(Phydata phydata) {
+        this.phydataArray.add(phydata);
+
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+>>>>>>> 2d17710 hjkhkj
     }
 
     public String getName() {
