@@ -110,6 +110,12 @@ public final class Utils extends Object {
         return -1;
     }
 
+    public static UserInfo getUserInfo(String userName, ArrayList<UserInfo> userInfoList) {
+        UserInfo userInfo = null;
+        int index = getArrayIndexUserName(userName, userInfoList);
+        return (UserInfo) userInfoList.get(index);
+    }
+
     public static String getRadioButton(ButtonGroup buttonGroup) {
         for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
