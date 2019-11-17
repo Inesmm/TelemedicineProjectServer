@@ -6,6 +6,7 @@
 package Persistence;
 
 import POJOs.UserInfo;
+import POJOs.UserPassword;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -28,11 +29,13 @@ public final class Utils extends Object {
     public static final String NEWUN = "qwerty";
     public static final String DIRECTORY = "data";
     public static final String FILENAME = "UserInfo.dat";
+    public static final String FILENAME_UP = "UserPassword.dat";
 
     public static final String STOP = "stop";
     public static final String VALID = "valid";
     public static final String VALID_USERNAME = "validusername";
     public static final String ERR = "error";
+
 
     /* public static void GraphPhydata(int[][] dataRec) {
         int row = dataRec.length;
@@ -75,6 +78,20 @@ public final class Utils extends Object {
         boolean check = true;
         Iterator<UserInfo> it = userInfoList.iterator();
         while (it.hasNext()) {
+            loaduserName = it.next().getUserPassword().getUserName();
+            if (loaduserName.compareTo(userName) == 0) {
+                check = false;
+            }
+        }
+        return check;
+    }
+
+    public static boolean checkUserNameList(String userName, ArrayList<UserPassword> userPasswordList) {
+        //TRUE if it doesn`t exist;
+        String loaduserName = null;
+        boolean check = true;
+        Iterator<UserPassword> it = userPasswordList.iterator();
+        while (it.hasNext()) {
             loaduserName = it.next().getUserName();
             if (loaduserName.compareTo(userName) == 0) {
                 check = false;
@@ -103,17 +120,41 @@ public final class Utils extends Object {
         Iterator<UserInfo> it = userInfoList.iterator();
         while (it.hasNext()) {
             useInfo = it.next();
-            if (useInfo.getUserName().compareTo(userName) == 0) {
+            if (useInfo.getUserPassword().getUserName().compareTo(userName) == 0) {
                 return userInfoList.indexOf(useInfo);
             }
         }
         return -1;
     }
 
+    public static int getArrayIndexUserPassword(String userName, ArrayList<UserPassword> userPassword) {
+        UserPassword usePass = null;
+        Iterator<UserPassword> it = userPassword.iterator();
+        while (it.hasNext()) {
+            usePass = it.next();
+            if (usePass.getUserName().compareTo(userName) == 0) {
+                return userPassword.indexOf(usePass);
+            }
+        }
+        return -1;
+    }
+
+    public static UserPassword takeOutCode(UserPassword userPassword) {
+        String[] userName = userPassword.getUserName().split(Utils.NEWUN);
+        userPassword.setUserName(userName[0]);
+        return userPassword;
+    }
+
     public static UserInfo getUserInfo(String userName, ArrayList<UserInfo> userInfoList) {
         UserInfo userInfo = null;
         int index = getArrayIndexUserName(userName, userInfoList);
         return (UserInfo) userInfoList.get(index);
+    }
+
+    public static UserPassword getUserPassword(String userName, ArrayList<UserPassword> userPasswordList) {
+        UserPassword userPassword = null;
+        int index = getArrayIndexUserPassword(userName, userPasswordList);
+        return (UserPassword) userPasswordList.get(index);
     }
 
     public static String getRadioButton(ButtonGroup buttonGroup) {
@@ -128,11 +169,11 @@ public final class Utils extends Object {
     }
 
     //RETURN TRUE IF IT IS CORREct
-    public static boolean checkCorrectPassword(String userNametocheck, String passwordtocheck, ArrayList<UserInfo> userInfoList) {
-        int index = Utils.getArrayIndexUserName(userNametocheck, userInfoList);
-        UserInfo userInfo = userInfoList.get(index);
-        if ((userInfo.getUserName().compareTo(userNametocheck) == 0)
-                && (userInfo.getPassword().compareTo(passwordtocheck)) == 0) {
+    public static boolean checkCorrectPassword(String userNametocheck, String passwordtocheck, ArrayList<UserPassword> userPasswordList) {
+        int index = Utils.getArrayIndexUserPassword(userNametocheck, userPasswordList);
+        UserPassword userPassword = userPasswordList.get(index);
+        if ((userPassword.getUserName().compareTo(userNametocheck) == 0)
+                && (userPassword.getPassword().compareTo(passwordtocheck)) == 0) {
             return true;
         } else {
             return false;

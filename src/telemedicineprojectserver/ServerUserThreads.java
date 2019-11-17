@@ -7,6 +7,7 @@ package telemedicineprojectserver;
 
 import POJOs.Phydata;
 import POJOs.UserInfo;
+import POJOs.UserPassword;
 import Persistence.PersistenceOp;
 import Persistence.Utils;
 import java.io.BufferedReader;
@@ -34,7 +35,9 @@ public class ServerUserThreads implements Runnable {
     @Override
     public void run() {
         ArrayList<UserInfo> userInfoList = null;
-        UserInfo userInfo = null;
+        ArrayList<UserPassword> userPasswordList = null;
+        //UserInfo userInfo = null;
+        UserPassword userPassword = null;
         Phydata phydata = null;
         PrintWriter printWriter = null;
         InputStream inputStream = null;
@@ -44,22 +47,37 @@ public class ServerUserThreads implements Runnable {
             inputStream = socket.getInputStream();
             objectInputStream = new ObjectInputStream(inputStream);
             try {
-                userInfoList = PersistenceOp.loadUserInfo(Utils.DIRECTORY, Utils.FILENAME);
+                userPasswordList = PersistenceOp.loadUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP);
                 System.out.println("Connection client created");
-                Object tmp = (Object) objectInputStream.readObject();
-                userInfo = (UserInfo) tmp;
-                if (userInfo.getName().contains(Utils.NEWUN)) {
-                    if (!Utils.checkUserName(userInfo.getName(), userInfoList)) {
+                Object tmp;
+                /*while ((tmp = objectInputStream.readObject()) != null) {
+                    userPassword = (UserPassword) tmp;
+                    System.out.println("Server Recieved:" + userPassword.toString());
+                }*/
+                tmp = objectInputStream.readObject();
+                userPassword = (UserPassword) tmp;
+                if (userPassword.getUserName().contains(Utils.NEWUN)) {
+                    userPassword = Utils.takeOutCode(userPassword);
+                    if (!Utils.checkUserNameList(userPassword.getUserName(), userPasswordList)) {
+                        System.out.println(Utils.ERR);
                         printWriter.println(Utils.ERR);
                     } else {
+                        System.out.println(Utils.VALID_USERNAME);
                         printWriter.println(Utils.VALID_USERNAME);
+                        PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
+                        //TODO recived age and name;
+                        System.out.println("ExitoSignUp");
                     }
                 } else {
-                    if (!Utils.checkCorrectPassword(userInfo.getName(), userInfo.getPassword(), userInfoList)) {
+                    if (!Utils.checkCorrectPassword(userPassword.getUserName(),
+                            userPassword.getPassword(), userPasswordList)) {
                         printWriter.println(Utils.ERR);
                     } else {
+                        //TODO
+                        //userInfoList = PersistenceOp.loadUserInfo(Utils.DIRECTORY, Utils.FILENAME);
+                        //UserInfo userInfo = Utils.getUserInfo(userPassword.getUserName(), userInfoList);
+                        System.out.println("ExitoSignIn");
                         printWriter.println(Utils.VALID);
-                        userInfo = Utils.getUserInfo(userInfo.getName(), userInfoList);
                     }
                 }
             } catch (IOException ex) {

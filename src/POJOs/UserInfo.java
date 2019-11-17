@@ -15,45 +15,30 @@ import java.util.ArrayList;
 public class UserInfo implements Serializable {
 ////
 
+    private UserPassword userPassword;
     private String name;
-    private String password;
-    private String userName;
     private int age;
     private ArrayList phydataArray;
-    private boolean checked;
 
-    public UserInfo(String name, String userName, String password, int age, ArrayList phydataArray, boolean checked) {
-        this.checked = checked;
+    public UserInfo(String name, UserPassword userPassword, int age, ArrayList phydataArray) {
         this.name = name;
-        this.password = password;
-        this.userName = userName;
+        this.userPassword = userPassword;
         this.age = age;
         this.phydataArray = phydataArray;
 
     }
 
-    public UserInfo(String name, String userName, String password, int age, ArrayList phydataArray) {
+    public UserInfo(String name, UserPassword userPassword, int age) {
+        this.userPassword = userPassword;
         this.name = name;
-        this.password = password;
-        this.userName = userName;
-        this.age = age;
-        this.phydataArray = phydataArray;
-
-    }
-
-    public UserInfo(String name, String userName, String password, int age) {
-        this.name = name;
-        this.password = password;
-        this.userName = userName;
         this.age = age;
         this.phydataArray = null;
 
     }
 
     public UserInfo() {
+        this.userPassword = null;
         this.name = null;
-        this.password = null;
-        this.userName = null;
         this.age = 0;
         this.phydataArray = null;
 
@@ -61,14 +46,15 @@ public class UserInfo implements Serializable {
 
     public void saveMeasure(Phydata phydata) {
         this.phydataArray.add(phydata);
+
     }
 
-    public boolean isChecked() {
-        return checked;
+    public UserPassword getUserPassword() {
+        return userPassword;
     }
 
-    public void setChecked(boolean checked) {
-        this.checked = checked;
+    public void setUserPassword(UserPassword userPassword) {
+        this.userPassword = userPassword;
     }
 
     public String getName() {
@@ -77,22 +63,6 @@ public class UserInfo implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public int getAge() {
@@ -112,7 +82,7 @@ public class UserInfo implements Serializable {
     }
 
     public String toString() {
-        return "name: " + this.name + ", UserName: " + this.userName + ", measures: " + phydataArray.size();
+        return "name: " + this.name + ", measures: " + phydataArray.size();
     }
 
 }
