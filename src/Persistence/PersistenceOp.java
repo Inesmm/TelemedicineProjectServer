@@ -37,9 +37,9 @@ public final class PersistenceOp {
         try {
             file = new File(directory, fileName);
             usersInfoList = loadUserInfo(directory, fileName);
-            if (!Utils.checkUserName(user.getUserPassword().getUserName(), usersInfoList)) {
-                System.out.println("index: " + Utils.getArrayIndexUserName(user.getUserPassword().getUserName(), usersInfoList));
-                usersInfoList.remove(Utils.getArrayIndexUserName(user.getUserPassword().getUserName(), usersInfoList));
+            if (!Utils.checkUserName(user.getUserName(), usersInfoList)) {
+                System.out.println("index: " + Utils.getArrayIndexUserName(user.getUserName(), usersInfoList));
+                usersInfoList.remove(Utils.getArrayIndexUserName(user.getUserName(), usersInfoList));
                 usersInfoList.add(user);
                 return 1;
             }
