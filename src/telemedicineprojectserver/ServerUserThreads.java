@@ -54,6 +54,7 @@ public class ServerUserThreads implements Runnable {
                     userPassword = (UserPassword) tmp;
                     System.out.println("Server Recieved:" + userPassword.toString());
                 }*/
+
                 tmp = objectInputStream.readObject();
                 userPassword = (UserPassword) tmp;
                 if (userPassword.getUserName().contains(Utils.NEWUN)) {
