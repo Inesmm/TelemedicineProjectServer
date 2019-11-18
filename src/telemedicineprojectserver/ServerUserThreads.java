@@ -5,10 +5,18 @@
  */
 package telemedicineprojectserver;
 
+import POJOs.Phydata;
+import POJOs.UserInfo;
+import POJOs.UserPassword;
+import Persistence.PersistenceOp;
+import Persistence.Utils;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,31 +34,64 @@ public class ServerUserThreads implements Runnable {
 
     @Override
     public void run() {
-        BufferedReader bufferedReader = null;
+        ArrayList<UserInfo> userInfoList = null;
+        ArrayList<UserPassword> userPasswordList = null;
+        //UserInfo userInfo = null;
+        UserPassword userPassword = null;
+        Phydata phydata = null;
+        PrintWriter printWriter = null;
+        InputStream inputStream = null;
+        ObjectInputStream objectInputStream = null;
         try {
-            System.out.println("Connection client created");
-            bufferedReader = new BufferedReader(
-                    new InputStreamReader(socket.getInputStream()));
-            System.out.println("Text Received:\n");
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                if (line.toLowerCase().contains("stop")) {
-                    System.out.println("Stopping the server");
-                    releaseResources(bufferedReader, socket);
-                    System.exit(0);
+            printWriter = new PrintWriter(socket.getOutputStream(), true);
+            inputStream = socket.getInputStream();
+            objectInputStream = new ObjectInputStream(inputStream);
+            try {
+                userPasswordList = PersistenceOp.loadUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP);
+                System.out.println("Connection client created");
+                Object tmp;
+                /*while ((tmp = objectInputStream.readObject()) != null) {
+                    userPassword = (UserPassword) tmp;
+                    System.out.println("Server Recieved:" + userPassword.toString());
+                }*/
+                tmp = objectInputStream.readObject();
+                userPassword = (UserPassword) tmp;
+                if (userPassword.getUserName().contains(Utils.NEWUN)) {
+                    userPassword = Utils.takeOutCode(userPassword);
+                    if (!Utils.checkUserNameList(userPassword.getUserName(), userPasswordList)) {
+                        System.out.println(Utils.ERR);
+                        printWriter.println(Utils.ERR);
+                    } else {
+                        System.out.println(Utils.VALID_USERNAME);
+                        printWriter.println(Utils.VALID_USERNAME);
+                        PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
+                        //TODO recived age and name;
+                        System.out.println("ExitoSignUp");
+                    }
+                } else {
+                    if (!Utils.checkCorrectPassword(userPassword.getUserName(),
+                            userPassword.getPassword(), userPasswordList)) {
+                        printWriter.println(Utils.ERR);
+                    } else {
+                        //TODO
+                        //userInfoList = PersistenceOp.loadUserInfo(Utils.DIRECTORY, Utils.FILENAME);
+                        //UserInfo userInfo = Utils.getUserInfo(userPassword.getUserName(), userInfoList);
+                        System.out.println("ExitoSignIn");
+                        printWriter.println(Utils.VALID);
+                    }
                 }
-                System.out.println(line);
+            } catch (IOException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+
             }
         } catch (IOException ex) {
             Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            try {
-                bufferedReader.close();
-            } catch (IOException ex) {
-                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            printWriter.close();
         }
-
     }
 
     private static void releaseResources(BufferedReader bufferedReader,
