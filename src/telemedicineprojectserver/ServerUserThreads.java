@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -64,9 +66,15 @@ public class ServerUserThreads implements Runnable {
                     } else {
                         System.out.println(Utils.VALID_USERNAME);
                         printWriter.println(Utils.VALID_USERNAME);
-                        PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
-                        //TODO recived age and name;
-                        System.out.println("ExitoSignUp");
+                        //PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
+                        //TO DO recived age and name;
+                        //System.out.println("ExitoSignUp");
+                        String encryptedPassword=encodePassword(userPassword.getPassword()); //encryption of user and password
+                        String encryptedUser = encodePassword(userPassword.getUserName());
+                        UserPassword encrypted = null; 
+                        encrypted.setPassword(encryptedPassword);
+                        encrypted.setUserName(encryptedUser);
+                        PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList); //we save passwprd and username encrypted
                     }
                 } else {
                     if (!Utils.checkCorrectPassword(userPassword.getUserName(),
@@ -92,6 +100,32 @@ public class ServerUserThreads implements Runnable {
         } finally {
             printWriter.close();
         }
+    }
+    
+    public static String encodePassword(String passwordToEncode) { //Encryption of password and user
+        //This method is use to encode the pasword of the Client or Doctor.
+        String passwordToHash = passwordToEncode;
+        String generatedPassword = null;
+        try {
+            // Create MessageDigest instance for MD5
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            //Add password bytes to digest
+            md.update(passwordToHash.getBytes());
+            //Get the hash's bytes
+            byte[] bytes = md.digest();
+            //This bytes[] has bytes in decimal format;
+            //Convert it to hexadecimal format
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < bytes.length; i++) {
+                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            //Get complete hashed password in hex format
+            generatedPassword = sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return generatedPassword;
     }
 
     private static void releaseResources(BufferedReader bufferedReader,
