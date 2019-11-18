@@ -15,21 +15,21 @@ import java.util.ArrayList;
 public class UserInfo implements Serializable {
 ////
 
-    private UserPassword userPassword;
+    private String userName;
     private String name;
     private int age;
     private ArrayList phydataArray;
 
-    public UserInfo(String name, UserPassword userPassword, int age, ArrayList phydataArray) {
+    public UserInfo(String name, String userName, int age, ArrayList phydataArray) {
         this.name = name;
-        this.userPassword = userPassword;
+        this.userName = userName;
         this.age = age;
         this.phydataArray = phydataArray;
 
     }
 
-    public UserInfo(String name, UserPassword userPassword, int age) {
-        this.userPassword = userPassword;
+    public UserInfo(String name, String userName, int age) {
+        this.userName= userName;
         this.name = name;
         this.age = age;
         this.phydataArray = null;
@@ -37,7 +37,7 @@ public class UserInfo implements Serializable {
     }
 
     public UserInfo() {
-        this.userPassword = null;
+        this.userName = null;
         this.name = null;
         this.age = 0;
         this.phydataArray = null;
@@ -49,13 +49,14 @@ public class UserInfo implements Serializable {
 
     }
 
-    public UserPassword getUserPassword() {
-        return userPassword;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUserPassword(UserPassword userPassword) {
-        this.userPassword = userPassword;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
+
 
     public String getName() {
         return name;
@@ -82,7 +83,7 @@ public class UserInfo implements Serializable {
     }
 
     public String toString() {
-        return "name: " + this.name + ", measures: " + phydataArray.size();
+        return "name: " + this.name + "userName: "+ this.userName +", measures: " + phydataArray.size();
     }
 
 }
