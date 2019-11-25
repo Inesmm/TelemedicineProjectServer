@@ -21,6 +21,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.security.*;
+import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  *
@@ -70,12 +73,28 @@ public class ServerUserThreads implements Runnable {
                         //PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
                         //TO DO recived age and name;
                         //System.out.println("ExitoSignUp");
-                        String encryptedPassword=encodePassword(userPassword.getPassword()); //encryption of user and password
-                        String encryptedUser = encodePassword(userPassword.getUserName());
+                        //String encryptedPassword=encodePassword(userPassword.getPassword()); //encryption of user and password
+                        //String encryptedUser = encodePassword(userPassword.getUserName());
+                        //UserPassword encrypted = null; 
+                        //encrypted.setPassword(encryptedPassword);
+                        //encrypted.setUserName(encryptedUser);
+                        //PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList); //we save passwprd and username encrypted
+                        String algorithm  = "AES/CBC/PKCS5Padding";
+                        Cipher cipher = Cipher.getInstance(algorithm);
+                        KeyGenerator key = KeyGenerator.getInstance(algorithm);
+                        SecureRandom secureRandom = new SecureRandom();
+                        int keyBitSize = 256;
+                        key.init(keyBitSize, secureRandom);
+                        SecretKey secretKey = key.generateKey();
+                        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+                        byte [] password = userPassword.getPassword().getBytes("UFT-8");
+                        byte [] username = userPassword.getUserName().getBytes("UFT-8");
+                        byte [] encryptedPassword = cipher.doFinal(password);
+                        byte [] encryptedUsername = cipher.doFinal(username);
                         UserPassword encrypted = null; 
-                        encrypted.setPassword(encryptedPassword);
-                        encrypted.setUserName(encryptedUser);
-                        PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList); //we save passwprd and username encrypted
+                        encrypted.setUserName(encryptedUsername.toString());
+                        encrypted.setPassword(encryptedPassword.toString());
+                        PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList);
                     }
                 } else {
                     if (!Utils.checkCorrectPassword(userPassword.getUserName(),
@@ -92,6 +111,16 @@ public class ServerUserThreads implements Runnable {
             } catch (IOException ex) {
                 Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NoSuchPaddingException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvalidKeyException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalBlockSizeException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (BadPaddingException ex) {
                 Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
 
