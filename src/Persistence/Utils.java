@@ -168,7 +168,7 @@ public final class Utils extends Object {
         return null;
     }
 
-    //RETURN TRUE IF IT IS CORREct
+    //RETURN TRUE IF IT IS CORRECT
     public static boolean checkCorrectPassword(String userNametocheck, String passwordtocheck, ArrayList<UserPassword> userPasswordList) {
         int index = Utils.getArrayIndexUserPassword(userNametocheck, userPasswordList);
         UserPassword userPassword = userPasswordList.get(index);
