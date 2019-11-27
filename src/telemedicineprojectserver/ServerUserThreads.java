@@ -167,7 +167,7 @@ public class ServerUserThreads implements Runnable {
         }
     }
 
-    public static String encodePassword(String passwordToEncode) { //Encryption of password and user
+    /*public static String encodePassword(String passwordToEncode) { //Encryption of password and user
         //This method is use to encode the pasword of the Client or Doctor.
         String passwordToHash = passwordToEncode;
         String generatedPassword = null;
@@ -191,7 +191,7 @@ public class ServerUserThreads implements Runnable {
         }
 
         return generatedPassword;
-    }
+    }*/
 
     private static void releaseResources(BufferedReader bufferedReader,
             Socket socket) {
