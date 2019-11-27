@@ -51,6 +51,7 @@ public class ServerUserThreads implements Runnable {
         ObjectOutputStream objectOutputStream = null;
         ObjectInputStream objectInputStream = null;
         Answer answerServer = new Answer("hola");
+        boolean check = true;
         try {
             outputStream = socket.getOutputStream();
             objectOutputStream = new ObjectOutputStream(outputStream);
@@ -59,23 +60,26 @@ public class ServerUserThreads implements Runnable {
             try {
                 userPasswordList = PersistenceOp.loadUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP);
                 System.out.println("Connection client created");
-                Object tmp;
+                
                 /*while ((tmp = objectInputStream.readObject()) != null) {
                     userPassword = (UserPassword) tmp;
                     System.out.println("Server Recieved:" + userPassword.toString());
                 }*/
-
+                while(check){
+                Object tmp;
+                System.out.println("traza");
                 tmp = objectInputStream.readObject();
-                userPassword = (UserPassword) tmp;
+                userPassword = (UserPassword) tmp;        
                 if (userPassword.getUserName().contains(Utils.NEWUN)) {
                     userPassword = Utils.takeOutCode(userPassword);
                     if (!Utils.checkUserNameList(userPassword.getUserName(), userPasswordList)) {
                         answerServer.setAnswer(Answer.ERR);
-                        System.out.println(Answer.ERR);
+                        System.out.println("buble:"+Answer.ERR);
                         objectOutputStream.writeObject(answerServer);
                     } else {
+                        check = false;
                         answerServer.setAnswer(Answer.VALID_USERNAME);
-                        System.out.println(Answer.VALID_USERNAME);
+                        System.out.println("le envia:" + answerServer.getAnswer());
                         objectOutputStream.writeObject(answerServer);
                         PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
                         //TO DO recived age and name;
@@ -86,6 +90,7 @@ public class ServerUserThreads implements Runnable {
                         //encrypted.setPassword(encryptedPassword);
                         //encrypted.setUserName(encryptedUser);
                         //PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList); //we save passwprd and username encrypted
+                       /* String algorithm = "AES/CBC/PKCS5Padding";
                         /*String algorithm  = "AES";
                         //String algorithm = "AES/CBC/PKCS5Padding";
                         Cipher cipher = Cipher.getInstance(algorithm);
@@ -99,10 +104,17 @@ public class ServerUserThreads implements Runnable {
                         byte[] username = userPassword.getUserName().getBytes("UFT-8");
                         byte[] encryptedPassword = cipher.doFinal(password);
                         byte[] encryptedUsername = cipher.doFinal(username);
-                        UserPassword encrypted = new UserPassword(encryptedUsername.toString(), encryptedPassword.toString());
+                        UserPassword encrypted = null;
+                        encrypted.setUserName(encryptedUsername.toString());
+                        encrypted.setPassword(encryptedPassword.toString());
                         PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList);*/
+                         PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP,userPassword, userPasswordList);
+                         System.out.println("USER SAVED");
+                                
                     }
-                } else {
+                } 
+                
+                else {
                     if (!Utils.checkCorrectPassword(userPassword.getUserName(),
                             userPassword.getPassword(), userPasswordList)) {
                         answerServer.setAnswer(Answer.ERR);
@@ -114,24 +126,27 @@ public class ServerUserThreads implements Runnable {
                         //UserInfo userInfo = Utils.getUserInfo(userPassword.getUserName(), userInfoList);
                         System.out.println("ExitoSignIn");
                         answerServer.setAnswer(Answer.VALID);
+                        check = false;
                         System.out.println(Answer.VALID);
                         objectOutputStream.writeObject(answerServer);
                     }
                 }
+                }
+                System.out.println("Ha terminado"+check);
             } catch (IOException ex) {
                 Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NoSuchAlgorithmException ex) {
-                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NoSuchPaddingException ex) {
-                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InvalidKeyException ex) {
-                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalBlockSizeException ex) {
-                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (BadPaddingException ex) {
-                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            //} catch (NoSuchAlgorithmException ex) {
+            //    Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            //} catch (NoSuchPaddingException ex) {
+            //    Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            //} catch (InvalidKeyException ex) {
+            //    Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            //} catch (IllegalBlockSizeException ex) {
+           //     Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+           // } catch (BadPaddingException ex) {
+           //     Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
 
             }
