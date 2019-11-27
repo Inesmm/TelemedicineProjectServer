@@ -5,6 +5,7 @@
  */
 package telemedicineprojectserver;
 
+import POJOs.AnswerServer;
 import POJOs.Phydata;
 import POJOs.UserInfo;
 import POJOs.UserPassword;
@@ -14,7 +15,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.PrintWriter;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -23,7 +25,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.security.*;
 import javax.crypto.*;
-import javax.crypto.spec.SecretKeySpec;
 
 /**
  *
@@ -44,11 +45,15 @@ public class ServerUserThreads implements Runnable {
         //UserInfo userInfo = null;
         UserPassword userPassword = null;
         Phydata phydata = null;
-        PrintWriter printWriter = null;
+        //PrintWriter printWriter = null;
+        OutputStream outputStream = null;
         InputStream inputStream = null;
+        ObjectOutputStream objectOutputStream = null;
         ObjectInputStream objectInputStream = null;
+        AnswerServer answerServer = null;
         try {
-            printWriter = new PrintWriter(socket.getOutputStream(), true);
+            outputStream = socket.getOutputStream();
+            objectOutputStream = new ObjectOutputStream(outputStream);
             inputStream = socket.getInputStream();
             objectInputStream = new ObjectInputStream(inputStream);
             try {
@@ -65,21 +70,26 @@ public class ServerUserThreads implements Runnable {
                 if (userPassword.getUserName().contains(Utils.NEWUN)) {
                     userPassword = Utils.takeOutCode(userPassword);
                     if (!Utils.checkUserNameList(userPassword.getUserName(), userPasswordList)) {
-                        System.out.println(Utils.ERR);
-                        printWriter.println(Utils.ERR);
+                        answerServer.setAnswer(AnswerServer.ERR);
+                        System.out.println(AnswerServer.ERR);
+                        objectOutputStream.writeObject(answerServer);
                     } else {
-                        System.out.println(Utils.VALID_USERNAME);
-                        printWriter.println(Utils.VALID_USERNAME);
-                        PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
+                        answerServer.setAnswer(AnswerServer.VALID_USERNAME);
+                        System.out.println(AnswerServer.VALID_USERNAME);
+                        objectOutputStream.writeObject(answerServer);
+                        //PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
                         //TO DO recived age and name;
                         //System.out.println("ExitoSignUp");
                         //String encryptedPassword=encodePassword(userPassword.getPassword()); //encryption of user and password
                         //String encryptedUser = encodePassword(userPassword.getUserName());
-                        //UserPassword encrypted = null; 
+                        //UserPassword encrypted = null;
                         //encrypted.setPassword(encryptedPassword);
                         //encrypted.setUserName(encryptedUser);
                         //PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList); //we save passwprd and username encrypted
                         /*String algorithm  = "AES";
+=======
+                        String algorithm = "AES/CBC/PKCS5Padding";
+>>>>>>> origin/master
                         Cipher cipher = Cipher.getInstance(algorithm);
                         KeyGenerator key = KeyGenerator.getInstance(algorithm);
                         SecureRandom secureRandom = new SecureRandom();
@@ -87,11 +97,11 @@ public class ServerUserThreads implements Runnable {
                         key.init(keyBitSize, secureRandom);
                         SecretKey secretKey = key.generateKey();
                         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-                        byte [] password = userPassword.getPassword().getBytes("UFT-8");
-                        byte [] username = userPassword.getUserName().getBytes("UFT-8");
-                        byte [] encryptedPassword = cipher.doFinal(password);
-                        byte [] encryptedUsername = cipher.doFinal(username);
-                        UserPassword encrypted = null; 
+                        byte[] password = userPassword.getPassword().getBytes("UFT-8");
+                        byte[] username = userPassword.getUserName().getBytes("UFT-8");
+                        byte[] encryptedPassword = cipher.doFinal(password);
+                        byte[] encryptedUsername = cipher.doFinal(username);
+                        UserPassword encrypted = null;
                         encrypted.setUserName(encryptedUsername.toString());
                         encrypted.setPassword(encryptedPassword.toString());
                         PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList);*/
@@ -99,13 +109,17 @@ public class ServerUserThreads implements Runnable {
                 } else {
                     if (!Utils.checkCorrectPassword(userPassword.getUserName(),
                             userPassword.getPassword(), userPasswordList)) {
-                        printWriter.println(Utils.ERR);
+                        answerServer.setAnswer(AnswerServer.ERR);
+                        System.out.println(AnswerServer.ERR);
+                        objectOutputStream.writeObject(answerServer);
                     } else {
                         //TODO
                         //userInfoList = PersistenceOp.loadUserInfo(Utils.DIRECTORY, Utils.FILENAME);
                         //UserInfo userInfo = Utils.getUserInfo(userPassword.getUserName(), userInfoList);
                         System.out.println("ExitoSignIn");
-                        printWriter.println(Utils.VALID);
+                        answerServer.setAnswer(AnswerServer.VALID);
+                        System.out.println(AnswerServer.VALID);
+                        objectOutputStream.writeObject(answerServer);
                     }
                 }
             } catch (IOException ex) {
@@ -118,10 +132,10 @@ public class ServerUserThreads implements Runnable {
         } catch (IOException ex) {
             Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            printWriter.close();
+            // printWriter.close();
         }
     }
-    
+
     public static String encodePassword(String passwordToEncode) { //Encryption of password and user
         //This method is use to encode the pasword of the Client or Doctor.
         String passwordToHash = passwordToEncode;
