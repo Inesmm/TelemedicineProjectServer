@@ -70,7 +70,7 @@ public class ServerUserThreads implements Runnable {
                     } else {
                         System.out.println(Utils.VALID_USERNAME);
                         printWriter.println(Utils.VALID_USERNAME);
-                        PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
+                        //PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
                         //TO DO recived age and name;
                         //System.out.println("ExitoSignUp");
                         //String encryptedPassword=encodePassword(userPassword.getPassword()); //encryption of user and password
@@ -79,7 +79,7 @@ public class ServerUserThreads implements Runnable {
                         //encrypted.setPassword(encryptedPassword);
                         //encrypted.setUserName(encryptedUser);
                         //PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList); //we save passwprd and username encrypted
-                        /*String algorithm  = "AES";
+                        String algorithm  = "AES/CBC/PKCS5Padding";
                         Cipher cipher = Cipher.getInstance(algorithm);
                         KeyGenerator key = KeyGenerator.getInstance(algorithm);
                         SecureRandom secureRandom = new SecureRandom();
@@ -94,7 +94,7 @@ public class ServerUserThreads implements Runnable {
                         UserPassword encrypted = null; 
                         encrypted.setUserName(encryptedUsername.toString());
                         encrypted.setPassword(encryptedPassword.toString());
-                        PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList);*/
+                        PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList);
                     }
                 } else {
                     if (!Utils.checkCorrectPassword(userPassword.getUserName(),
@@ -111,6 +111,16 @@ public class ServerUserThreads implements Runnable {
             } catch (IOException ex) {
                 Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NoSuchPaddingException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvalidKeyException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalBlockSizeException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (BadPaddingException ex) {
                 Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
 
