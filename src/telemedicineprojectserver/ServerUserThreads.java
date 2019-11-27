@@ -23,8 +23,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.security.*;
-import javax.crypto.*;
 
 /**
  *
@@ -50,7 +48,7 @@ public class ServerUserThreads implements Runnable {
         InputStream inputStream = null;
         ObjectOutputStream objectOutputStream = null;
         ObjectInputStream objectInputStream = null;
-        Answer answerServer = new Answer("hola");
+        //Answer answerServer = new Answer("hola");
         boolean check = true;
         try {
             outputStream = socket.getOutputStream();
@@ -60,37 +58,42 @@ public class ServerUserThreads implements Runnable {
             try {
                 userPasswordList = PersistenceOp.loadUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP);
                 System.out.println("Connection client created");
-                
+
                 /*while ((tmp = objectInputStream.readObject()) != null) {
                     userPassword = (UserPassword) tmp;
                     System.out.println("Server Recieved:" + userPassword.toString());
                 }*/
-                while(check){
-                Object tmp;
-                System.out.println("traza");
-                tmp = objectInputStream.readObject();
-                userPassword = (UserPassword) tmp;        
-                if (userPassword.getUserName().contains(Utils.NEWUN)) {
-                    userPassword = Utils.takeOutCode(userPassword);
-                    if (!Utils.checkUserNameList(userPassword.getUserName(), userPasswordList)) {
-                        answerServer.setAnswer(Answer.ERR);
-                        System.out.println("buble:"+Answer.ERR);
-                        objectOutputStream.writeObject(answerServer);
-                    } else {
-                        check = false;
-                        answerServer.setAnswer(Answer.VALID_USERNAME);
-                        System.out.println("le envia:" + answerServer.getAnswer());
-                        objectOutputStream.writeObject(answerServer);
-                        //PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
-                        //TO DO recived age and name;
-                        //System.out.println("ExitoSignUp");
-                        //String encryptedPassword=encodePassword(userPassword.getPassword()); //encryption of user and password
-                        //String encryptedUser = encodePassword(userPassword.getUserName());
-                        //UserPassword encrypted = null;
-                        //encrypted.setPassword(encryptedPassword);
-                        //encrypted.setUserName(encryptedUser);
-                        //PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList); //we save passwprd and username encrypted
-                       /* String algorithm = "AES/CBC/PKCS5Padding";
+                while (check) {
+
+                    Object tmp;
+                    System.out.println("traza");
+                    tmp = objectInputStream.readObject();
+                    userPassword = (UserPassword) tmp;
+                    if (userPassword.getUserName().contains(Utils.NEWUN)) {
+                        userPassword = Utils.takeOutCode(userPassword);
+                        if (!Utils.checkUserNameList(userPassword.getUserName(), userPasswordList)) {
+                            Answer answerServer = new Answer("ERR");
+                            answerServer.setAnswer(Answer.ERR);
+                            System.out.println("le envia al client: " + answerServer.getAnswer());
+                            objectOutputStream.writeObject(answerServer);
+                        } else {
+                            check = false;
+                            Answer answerServer = new Answer("VALID_USERNAME");
+                            answerServer.setAnswer(Answer.VALID_USERNAME);
+                            System.out.println("le envia al client:" + answerServer.getAnswer());
+                            // outputStream.flush();
+                            //objectOutputStream.flush();
+                            objectOutputStream.writeObject(answerServer);
+                            //PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
+                            //TO DO recived age and name;
+                            //System.out.println("ExitoSignUp");
+                            //String encryptedPassword=encodePassword(userPassword.getPassword()); //encryption of user and password
+                            //String encryptedUser = encodePassword(userPassword.getUserName());
+                            //UserPassword encrypted = null;
+                            //encrypted.setPassword(encryptedPassword);
+                            //encrypted.setUserName(encryptedUser);
+                            //PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList); //we save passwprd and username encrypted
+                            /* String algorithm = "AES/CBC/PKCS5Padding";
                         Cipher cipher = Cipher.getInstance(algorithm);
                         KeyGenerator key = KeyGenerator.getInstance(algorithm);
                         SecureRandom secureRandom = new SecureRandom();
@@ -106,45 +109,54 @@ public class ServerUserThreads implements Runnable {
                         encrypted.setUserName(encryptedUsername.toString());
                         encrypted.setPassword(encryptedPassword.toString());
                         PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList);*/
-                         PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP,userPassword, userPasswordList);
-                         System.out.println("USER SAVED");
-                                
-                    }
-                } 
-                
-                else {
-                    if (!Utils.checkCorrectPassword(userPassword.getUserName(),
-                            userPassword.getPassword(), userPasswordList)) {
-                        answerServer.setAnswer(Answer.ERR);
-                        System.out.println(Answer.ERR);
-                        objectOutputStream.writeObject(answerServer);
+                            PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
+                            System.out.println("USER SAVED");
+
+                        }
                     } else {
-                        //TODO
-                        //userInfoList = PersistenceOp.loadUserInfo(Utils.DIRECTORY, Utils.FILENAME);
-                        //UserInfo userInfo = Utils.getUserInfo(userPassword.getUserName(), userInfoList);
-                        System.out.println("ExitoSignIn");
-                        answerServer.setAnswer(Answer.VALID);
-                        check = false;
-                        System.out.println(Answer.VALID);
-                        objectOutputStream.writeObject(answerServer);
+                        if (!Utils.checkCorrectPassword(userPassword.getUserName(),
+                                userPassword.getPassword(), userPasswordList)) {
+                            Answer answerServer = new Answer("ERROR");
+
+                            answerServer.setAnswer(Answer.ERR);
+                            System.out.println(Answer.ERR);
+                            System.out.println("le envia al client:" + answerServer.getAnswer());
+
+                            objectOutputStream.writeObject(answerServer);
+                        } else {
+                            //TODO
+                            //userInfoList = PersistenceOp.loadUserInfo(Utils.DIRECTORY, Utils.FILENAME);
+                            //UserInfo userInfo = Utils.getUserInfo(userPassword.getUserName(), userInfoList);
+                            System.out.println("ExitoSignIn");
+                            Answer answerServer = new Answer("VALID");
+
+                            answerServer.setAnswer(Answer.VALID);
+                            check = false;
+                            System.out.println(Answer.VALID);
+                            System.out.println("le envia al client:" + answerServer.getAnswer());
+
+                            objectOutputStream.writeObject(answerServer);
+                        }
                     }
                 }
-                }
-                System.out.println("Ha terminado"+check);
+                Thread.sleep(1000);
+                System.out.println("Ha terminado" + check);
             } catch (IOException ex) {
                 Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
-            //} catch (NoSuchAlgorithmException ex) {
-            //    Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
-            //} catch (NoSuchPaddingException ex) {
-            //    Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
-            //} catch (InvalidKeyException ex) {
-            //    Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
-            //} catch (IllegalBlockSizeException ex) {
-           //     Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
-           // } catch (BadPaddingException ex) {
-           //     Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+                //} catch (NoSuchAlgorithmException ex) {
+                //    Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+                //} catch (NoSuchPaddingException ex) {
+                //    Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+                //} catch (InvalidKeyException ex) {
+                //    Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+                //} catch (IllegalBlockSizeException ex) {
+                //     Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+                // } catch (BadPaddingException ex) {
+                //     Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
 
             }
