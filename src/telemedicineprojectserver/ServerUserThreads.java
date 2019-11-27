@@ -77,7 +77,7 @@ public class ServerUserThreads implements Runnable {
                         answerServer.setAnswer(Answer.VALID_USERNAME);
                         System.out.println(Answer.VALID_USERNAME);
                         objectOutputStream.writeObject(answerServer);
-                        //PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
+                        PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
                         //TO DO recived age and name;
                         //System.out.println("ExitoSignUp");
                         //String encryptedPassword=encodePassword(userPassword.getPassword()); //encryption of user and password
@@ -87,9 +87,7 @@ public class ServerUserThreads implements Runnable {
                         //encrypted.setUserName(encryptedUser);
                         //PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList); //we save passwprd and username encrypted
                         /*String algorithm  = "AES";
-=======
-                        String algorithm = "AES/CBC/PKCS5Padding";
->>>>>>> origin/master
+                        //String algorithm = "AES/CBC/PKCS5Padding";
                         Cipher cipher = Cipher.getInstance(algorithm);
                         KeyGenerator key = KeyGenerator.getInstance(algorithm);
                         SecureRandom secureRandom = new SecureRandom();
@@ -101,9 +99,7 @@ public class ServerUserThreads implements Runnable {
                         byte[] username = userPassword.getUserName().getBytes("UFT-8");
                         byte[] encryptedPassword = cipher.doFinal(password);
                         byte[] encryptedUsername = cipher.doFinal(username);
-                        UserPassword encrypted = null;
-                        encrypted.setUserName(encryptedUsername.toString());
-                        encrypted.setPassword(encryptedPassword.toString());
+                        UserPassword encrypted = new UserPassword(encryptedUsername.toString(), encryptedPassword.toString());
                         PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList);*/
                     }
                 } else {
@@ -126,6 +122,16 @@ public class ServerUserThreads implements Runnable {
                 Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NoSuchPaddingException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvalidKeyException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalBlockSizeException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (BadPaddingException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
 
             }
@@ -136,7 +142,7 @@ public class ServerUserThreads implements Runnable {
         }
     }
 
-    public static String encodePassword(String passwordToEncode) { //Encryption of password and user
+    /*public static String encodePassword(String passwordToEncode) { //Encryption of password and user
         //This method is use to encode the pasword of the Client or Doctor.
         String passwordToHash = passwordToEncode;
         String generatedPassword = null;
@@ -160,7 +166,7 @@ public class ServerUserThreads implements Runnable {
         }
 
         return generatedPassword;
-    }
+    }*/
 
     private static void releaseResources(BufferedReader bufferedReader,
             Socket socket) {
