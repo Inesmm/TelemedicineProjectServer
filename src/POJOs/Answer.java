@@ -5,20 +5,23 @@
  */
 package POJOs;
 
+import java.io.Serializable;
+
 /**
  *
  * @author juanb
  */
-public class AnswerServer {
+public class Answer implements Serializable{
 
     public static final String STOP = "stop";
     public static final String VALID = "valid";
     public static final String VALID_USERNAME = "validusername";
     public static final String ERR = "error";
+    public static final String NEWUN = "qwerty";
 
     private String answer = null;
 
-    public AnswerServer(String answer) {
+    public Answer(String answer) {
         this.answer = answer;
     }
 

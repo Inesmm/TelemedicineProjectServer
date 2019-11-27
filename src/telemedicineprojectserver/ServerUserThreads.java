@@ -5,7 +5,7 @@
  */
 package telemedicineprojectserver;
 
-import POJOs.AnswerServer;
+import POJOs.Answer;
 import POJOs.Phydata;
 import POJOs.UserInfo;
 import POJOs.UserPassword;
@@ -50,7 +50,7 @@ public class ServerUserThreads implements Runnable {
         InputStream inputStream = null;
         ObjectOutputStream objectOutputStream = null;
         ObjectInputStream objectInputStream = null;
-        AnswerServer answerServer = null;
+        Answer answerServer = new Answer("hola");
         try {
             outputStream = socket.getOutputStream();
             objectOutputStream = new ObjectOutputStream(outputStream);
@@ -70,12 +70,12 @@ public class ServerUserThreads implements Runnable {
                 if (userPassword.getUserName().contains(Utils.NEWUN)) {
                     userPassword = Utils.takeOutCode(userPassword);
                     if (!Utils.checkUserNameList(userPassword.getUserName(), userPasswordList)) {
-                        answerServer.setAnswer(AnswerServer.ERR);
-                        System.out.println(AnswerServer.ERR);
+                        answerServer.setAnswer(Answer.ERR);
+                        System.out.println(Answer.ERR);
                         objectOutputStream.writeObject(answerServer);
                     } else {
-                        answerServer.setAnswer(AnswerServer.VALID_USERNAME);
-                        System.out.println(AnswerServer.VALID_USERNAME);
+                        answerServer.setAnswer(Answer.VALID_USERNAME);
+                        System.out.println(Answer.VALID_USERNAME);
                         objectOutputStream.writeObject(answerServer);
                         //PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
                         //TO DO recived age and name;
@@ -109,16 +109,16 @@ public class ServerUserThreads implements Runnable {
                 } else {
                     if (!Utils.checkCorrectPassword(userPassword.getUserName(),
                             userPassword.getPassword(), userPasswordList)) {
-                        answerServer.setAnswer(AnswerServer.ERR);
-                        System.out.println(AnswerServer.ERR);
+                        answerServer.setAnswer(Answer.ERR);
+                        System.out.println(Answer.ERR);
                         objectOutputStream.writeObject(answerServer);
                     } else {
                         //TODO
                         //userInfoList = PersistenceOp.loadUserInfo(Utils.DIRECTORY, Utils.FILENAME);
                         //UserInfo userInfo = Utils.getUserInfo(userPassword.getUserName(), userInfoList);
                         System.out.println("ExitoSignIn");
-                        answerServer.setAnswer(AnswerServer.VALID);
-                        System.out.println(AnswerServer.VALID);
+                        answerServer.setAnswer(Answer.VALID);
+                        System.out.println(Answer.VALID);
                         objectOutputStream.writeObject(answerServer);
                     }
                 }
