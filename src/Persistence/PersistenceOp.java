@@ -160,6 +160,7 @@ public final class PersistenceOp {
                 last = (int) objectInputStream.readObject();
                 for (int i = 0; i < last; i++) {
                     userPasswordList.add((UserPassword) objectInputStream.readObject());
+
                 }
             }
             objectInputStream.close();
