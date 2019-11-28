@@ -49,6 +49,7 @@ public class ServerUserThreads implements Runnable {
         ObjectOutputStream objectOutputStream = null;
         ObjectInputStream objectInputStream = null;
         //Answer answerServer = new Answer("hola");
+        Object tmp, tmp2, tmp3;
         boolean check = true;
         try {
             outputStream = socket.getOutputStream();
@@ -56,6 +57,7 @@ public class ServerUserThreads implements Runnable {
             inputStream = socket.getInputStream();
             objectInputStream = new ObjectInputStream(inputStream);
             try {
+                userInfoList = PersistenceOp.loadUserInfo(Utils.DIRECTORY, Utils.FILENAME);
                 userPasswordList = PersistenceOp.loadUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP);
                 System.out.println("Connection client created");
 
@@ -65,7 +67,6 @@ public class ServerUserThreads implements Runnable {
                 }*/
                 while (check) {
 
-                    Object tmp;
                     System.out.println("traza");
                     tmp = objectInputStream.readObject();
                     userPassword = (UserPassword) tmp;
@@ -109,12 +110,14 @@ public class ServerUserThreads implements Runnable {
                         encrypted.setUserName(encryptedUsername.toString());
                         encrypted.setPassword(encryptedPassword.toString());
                         PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList);*/
-                            Object tmp2;
+
                             tmp2 = objectInputStream.readObject();
                             ageName = (AgeName) tmp2;
+                            UserInfo userInfo = new UserInfo(userPassword, ageName.getName(), ageName.getAge());
+                            System.out.println("USerInfo:" + userInfo.toString());
                             PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
+                            PersistenceOp.saveUserInfo(Utils.DIRECTORY, Utils.FILENAME, userInfo, userInfoList);
                             System.out.println("USER SAVED");
-
                         }
                     } else {
                         if (!Utils.checkCorrectPassword(userPassword.getUserName(),
@@ -132,7 +135,6 @@ public class ServerUserThreads implements Runnable {
                             //UserInfo userInfo = Utils.getUserInfo(userPassword.getUserName(), userInfoList);
                             System.out.println("ExitoSignIn");
                             Answer answerServer = new Answer("VALID");
-
                             answerServer.setAnswer(Answer.VALID);
                             check = false;
                             System.out.println(Answer.VALID);
@@ -142,8 +144,14 @@ public class ServerUserThreads implements Runnable {
                         }
                     }
                 }
-                Thread.sleep(1000);
-                System.out.println("Ha terminado" + check);
+
+                tmp3 = objectInputStream.readObject();
+                phydata = (Phydata) tmp3;
+                System.out.println("PHYDATA RECEIVED");
+                //Utils.GraphPhydata(phydata.getAccRec());
+                PersistenceOp.savePhydataUserInfo(Utils.DIRECTORY, Utils.FILENAME, phydata, userPassword, userInfoList);
+                System.out.println("PHYDATA SAVED");
+
             } catch (IOException ex) {
                 Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
@@ -158,8 +166,6 @@ public class ServerUserThreads implements Runnable {
                 //     Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
                 // } catch (BadPaddingException ex) {
                 //     Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
 
             }

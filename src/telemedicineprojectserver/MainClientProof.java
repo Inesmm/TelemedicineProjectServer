@@ -6,6 +6,7 @@
 package telemedicineprojectserver;
 
 import POJOs.UserInfo;
+import POJOs.UserPassword;
 import Persistence.PersistenceOp;
 import Persistence.Utils;
 import java.io.IOException;
@@ -44,7 +45,11 @@ public class MainClientProof {
         PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
         System.out.println("cargado");*/
         ArrayList<UserInfo> userInfoList = PersistenceOp.loadUserInfo(Utils.DIRECTORY, Utils.FILENAME);
-        System.out.println("traza");
+        UserPassword userPassword = new UserPassword("juan", "1234");
+        UserInfo userInfo = new UserInfo(userPassword, "juan", 24);
+        PersistenceOp.saveUserInfo(Utils.DIRECTORY, Utils.FILENAME, userInfo, userInfoList);
+        System.out.println("saccesfully saved");
+
     }
 
     private static void releaseResources(PrintWriter printWriter, Socket socket) {

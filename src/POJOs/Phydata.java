@@ -5,13 +5,14 @@
  */
 package POJOs;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  *
  * @author juanb
  */
-public class Phydata {
+public class Phydata implements Serializable {
 
     private Date date;
     private int[][] eMGRec;

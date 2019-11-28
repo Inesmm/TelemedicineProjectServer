@@ -5,6 +5,7 @@
  */
 package Persistence;
 
+import POJOs.Phydata;
 import POJOs.UserInfo;
 import POJOs.UserPassword;
 import java.io.File;
@@ -37,23 +38,22 @@ public final class PersistenceOp {
     private static final String key = new String(array, Charset.forName("UTF-8"));
 
     //DIRECTORY AND FILENAME WHERE TO SAVE ALL THE DATA
-    public static int saveUserInfo(String directory, String fileName, UserInfo user) {
+    public static int saveUserInfo(String directory, String fileName, UserInfo user, ArrayList<UserInfo> usersInfoList) {
         //Save user. (If there is no even file, it creates)
         //if the USERNAME already exists returns -1, if not returns 0;
-        ArrayList<UserInfo> usersInfoList = null;
         File direct = new File(directory);
         File file = null;
         FileOutputStream fileOutputStream = null;
         ObjectOutputStream objectOutputStream = null;
         try {
             file = new File(directory, fileName);
-            usersInfoList = loadUserInfo(directory, fileName);
             if (!Utils.checkUserName(user.getUserPassword().getUserName(), usersInfoList)) {
-                System.out.println("index: " + Utils.getArrayIndexUserName(user.getUserPassword().getUserName(), usersInfoList));
+                System.out.println("indexines: " + Utils.getArrayIndexUserName(user.getUserPassword().getUserName(), usersInfoList));
                 usersInfoList.remove(Utils.getArrayIndexUserName(user.getUserPassword().getUserName(), usersInfoList));
                 usersInfoList.add(user);
                 return 1;
             }
+            System.out.println("indexjuan: " + Utils.getArrayIndexUserName(user.getUserPassword().getUserName(), usersInfoList));
             fileOutputStream = new FileOutputStream(file);
             objectOutputStream = new ObjectOutputStream(fileOutputStream);
             usersInfoList.add(user);
@@ -74,6 +74,16 @@ public final class PersistenceOp {
         return 1;
     }
 
+    public static void savePhydataUserInfo(String directory, String filename, Phydata phydata,
+            UserPassword userPassword, ArrayList<UserInfo> usersInfoList) {
+        UserInfo userInfo = null;
+        userInfo = Utils.getUserInfo(userPassword.getUserName(), usersInfoList);
+        System.out.println("Saless");
+        userInfo.getPhydataArray().add(phydata);
+        PersistenceOp.saveUserInfo(directory, filename, userInfo, usersInfoList);
+
+    }
+
     public static int saveUserPaswordList(String directory, String fileName,
             UserPassword userPassword, ArrayList<UserPassword> userpasswordList) {
 
@@ -91,7 +101,7 @@ public final class PersistenceOp {
                 file = new File(directory, fileName);
                 //System.out.println("dentro:" + Utils.checkUserNameList(userPassword.getUserName(), userpasswordList));
                 if (!Utils.checkUserNameList(userPassword.getUserName(), userpasswordList)) {
-                    System.out.println("index: " + Utils.getArrayIndexUserPassword(userPassword.getUserName(), userpasswordList));
+                    System.out.println("indexraul: " + Utils.getArrayIndexUserPassword(userPassword.getUserName(), userpasswordList));
                     userpasswordList.remove(Utils.getArrayIndexUserPassword(userPassword.getUserName(), userpasswordList));
                     userpasswordList.add(userPassword);
                     return 1;
@@ -137,6 +147,7 @@ public final class PersistenceOp {
             file = new File(directory, fileName);
             if (!file.exists()) {
                 file.createNewFile();
+
                 return usersInfoList;
             } else {
                 fileInputStream = new FileInputStream(file);

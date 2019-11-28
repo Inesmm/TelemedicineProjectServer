@@ -16,13 +16,24 @@ public class UserInfo implements Serializable {
 ////
 
     private UserPassword userPassword;
+    private String name;
     private int age;
     private ArrayList phydataArray;
 
-    public UserInfo(UserPassword userPassword, int age, ArrayList phydataArray) {
+    /*public UserInfo(UserPassword userPassword, String name, int age, ArrayList phydataArray) {
+        this.name = name;
         this.userPassword = userPassword;
         this.age = age;
         this.phydataArray = phydataArray;
+    }*/
+    public UserInfo(UserPassword userPassword, String name, int age) {
+        this.name = name;
+        this.userPassword = userPassword;
+        this.age = age;
+
+        this.phydataArray = new ArrayList();
+        System.out.println("ArrayList: " + this.phydataArray.size());
+
     }
 
     public UserPassword getUserPassword() {
@@ -43,6 +54,14 @@ public class UserInfo implements Serializable {
     public void saveMeasure(Phydata phydata) {
         this.phydataArray.add(phydata);
 
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getAge() {

@@ -12,6 +12,12 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartFrame;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import static org.jfree.chart.ui.UIUtils.centerFrameOnScreen;
+import org.jfree.data.xy.DefaultXYDataset;
 
 /*import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
@@ -115,10 +121,11 @@ public final class Utils extends Object {
         while (it.hasNext()) {
             useInfo = it.next();
             if (useInfo.getUserPassword().getUserName().compareTo(userName) == 0) {
+                System.out.println("El usario esta:" + userInfoList.indexOf(useInfo));
                 return userInfoList.indexOf(useInfo);
             }
         }
-        return -1;
+        return 0;
     }
 
     public static int getArrayIndexUserPassword(String userName, ArrayList<UserPassword> userPassword) {
@@ -130,7 +137,7 @@ public final class Utils extends Object {
                 return userPassword.indexOf(usePass);
             }
         }
-        return -1;
+        return 0;
     }
 
     public static UserPassword takeOutCode(UserPassword userPassword) {
@@ -207,6 +214,26 @@ public final class Utils extends Object {
         } catch (NumberFormatException ex) {
             return false;
         }
+
+    }
+
+    //JUST TO CHECH DELETE AFTER
+    public static void GraphPhydata(int[][] dataRec) {
+        int row = dataRec.length;
+        int col = dataRec[0].length;
+        double[][] values = new double[row][col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                values[i][j] = Double.valueOf(dataRec[i][j]);
+            }
+        }
+        DefaultXYDataset dataset = new DefaultXYDataset();
+        dataset.addSeries("hola", values);
+        JFreeChart lineChart = ChartFactory.createXYLineChart("EMG", "Seconds", "Volts", dataset, PlotOrientation.VERTICAL, true, true, false);
+        ChartFrame panel = new ChartFrame("", lineChart);
+        panel.pack();
+        panel.setVisible(true);
+        centerFrameOnScreen(panel);
 
     }
 
