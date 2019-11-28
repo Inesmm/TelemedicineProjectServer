@@ -72,7 +72,7 @@ public final class Utils extends Object {
         boolean check = true;
         Iterator<UserInfo> it = userInfoList.iterator();
         while (it.hasNext()) {
-            loaduserName = it.next().getUserName();
+            loaduserName = it.next().getUserPassword().getUserName();
             if (loaduserName.compareTo(userName) == 0) {
                 check = false;
             }
@@ -114,7 +114,7 @@ public final class Utils extends Object {
         Iterator<UserInfo> it = userInfoList.iterator();
         while (it.hasNext()) {
             useInfo = it.next();
-            if (useInfo.getUserName().compareTo(userName) == 0) {
+            if (useInfo.getUserPassword().getUserName().compareTo(userName) == 0) {
                 return userInfoList.indexOf(useInfo);
             }
         }
