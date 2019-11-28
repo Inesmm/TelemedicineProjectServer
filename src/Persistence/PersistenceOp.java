@@ -31,9 +31,11 @@ import sun.misc.BASE64Encoder;
  * @author juanb
  */
 public final class PersistenceOp {
+
     private static final String algorithm = "DES";
     private static final byte[] array = new byte[8];
     private static final String key = new String(array, Charset.forName("UTF-8"));
+
     //DIRECTORY AND FILENAME WHERE TO SAVE ALL THE DATA
     public static int saveUserInfo(String directory, String fileName, UserInfo user) {
         //Save user. (If there is no even file, it creates)
@@ -74,39 +76,49 @@ public final class PersistenceOp {
 
     public static int saveUserPaswordList(String directory, String fileName,
             UserPassword userPassword, ArrayList<UserPassword> userpasswordList) {
-        //Save user. (If there is no even file, it creates)
-        //if the USERNAME already exists returns -1, if not returns 0;
-        File direct = new File(directory);
-        File file = null;
-        FileOutputStream fileOutputStream = null;
-        ObjectOutputStream objectOutputStream = null;
+
+        UserPassword userPasswordEncr;
         try {
+            //Save user. (If there is no even file, it creates)
+            //if the USERNAME already exists returns -1, if not returns 0;
+            File direct = new File(directory);
+            File file = null;
+            FileOutputStream fileOutputStream = null;
+            ObjectOutputStream objectOutputStream = null;
 
-            file = new File(directory, fileName);
-            //System.out.println("dentro:" + Utils.checkUserNameList(userPassword.getUserName(), userpasswordList));
-            if (!Utils.checkUserNameList(userPassword.getUserName(), userpasswordList)) {
-                System.out.println("index: " + Utils.getArrayIndexUserPassword(userPassword.getUserName(), userpasswordList));
-                userpasswordList.remove(Utils.getArrayIndexUserPassword(userPassword.getUserName(), userpasswordList));
+            try {
+
+                file = new File(directory, fileName);
+                //System.out.println("dentro:" + Utils.checkUserNameList(userPassword.getUserName(), userpasswordList));
+                if (!Utils.checkUserNameList(userPassword.getUserName(), userpasswordList)) {
+                    System.out.println("index: " + Utils.getArrayIndexUserPassword(userPassword.getUserName(), userpasswordList));
+                    userpasswordList.remove(Utils.getArrayIndexUserPassword(userPassword.getUserName(), userpasswordList));
+                    userpasswordList.add(userPassword);
+                    return 1;
+                }
+                //System.out.println("traza2");
+                fileOutputStream = new FileOutputStream(file);
+                objectOutputStream = new ObjectOutputStream(fileOutputStream);
+
                 userpasswordList.add(userPassword);
-                return 1;
-            }
-            //System.out.println("traza2");
-            fileOutputStream = new FileOutputStream(file);
-            objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            userpasswordList.add(userPassword);
-            Iterator<UserPassword> it = userpasswordList.iterator();
-            objectOutputStream.writeObject(userpasswordList.size());
-            while (it.hasNext()) {
-                UserPassword us = (UserPassword) it.next();
-                objectOutputStream.writeObject(us);
-            }
-            objectOutputStream.close();
-            fileOutputStream.close();
+                Iterator<UserPassword> it = userpasswordList.iterator();
+                objectOutputStream.writeObject(userpasswordList.size());
+                while (it.hasNext()) {
+                    UserPassword us = (UserPassword) it.next();
+                    userPasswordEncr = encrypt(us);
+                    objectOutputStream.writeObject(userPasswordEncr);
+                }
+                objectOutputStream.close();
+                fileOutputStream.close();
 
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(PersistenceOp.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 1;
     }
@@ -149,6 +161,7 @@ public final class PersistenceOp {
     }
 
     public static ArrayList<UserPassword> loadUserPaswordList(String directory, String fileName) {
+        UserPassword userPassword;
         ArrayList<UserPassword> userPasswordList = new ArrayList();
         File file = null;
         FileInputStream fileInputStream = null;
@@ -168,7 +181,9 @@ public final class PersistenceOp {
                 objectInputStream = new ObjectInputStream(fileInputStream);
                 last = (int) objectInputStream.readObject();
                 for (int i = 0; i < last; i++) {
-                    userPasswordList.add((UserPassword) objectInputStream.readObject());
+                    userPassword = (UserPassword) objectInputStream.readObject();
+                    userPassword = decrypt(userPassword);
+                    userPasswordList.add(userPassword);
 
                 }
             }
@@ -180,12 +195,15 @@ public final class PersistenceOp {
             Logger.getLogger(PersistenceOp.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(PersistenceOp.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(PersistenceOp.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return userPasswordList;
 
     }
-    private static UserPassword encrypt(UserPassword encrypted)throws Exception{
+
+    private static UserPassword encrypt(UserPassword encrypted) throws Exception {
         Cipher cipher = Cipher.getInstance(algorithm);
         SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("DES");
         DESKeySpec keyspec = new DESKeySpec(key.getBytes());
@@ -201,7 +219,8 @@ public final class PersistenceOp {
         UserPassword encryption = new UserPassword(userEnc, passEnc);
         return encryption;
     }
-    private static UserPassword decrypt(UserPassword decrypted) throws Exception{
+
+    private static UserPassword decrypt(UserPassword decrypted) throws Exception {
         Cipher cipher = Cipher.getInstance(algorithm);
         SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("DES");
         DESKeySpec keyspec = new DESKeySpec(key.getBytes());
