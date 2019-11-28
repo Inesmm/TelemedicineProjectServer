@@ -11,7 +11,8 @@ import java.io.Serializable;
  *
  * @author inesu
  */
-public class AgeName implements Serializable{
+public class AgeName implements Serializable {
+
     private int age;
     private String name;
 
@@ -20,7 +21,6 @@ public class AgeName implements Serializable{
         this.name = name;
     }
 
-    
     public int getAge() {
         return age;
     }
@@ -36,6 +36,10 @@ public class AgeName implements Serializable{
     public void setName(String name) {
         this.name = name;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "AgeName{" + "age=" + age + ", name=" + name + '}';
+    }
+
 }

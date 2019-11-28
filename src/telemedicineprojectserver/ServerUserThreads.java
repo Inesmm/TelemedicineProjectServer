@@ -5,6 +5,7 @@
  */
 package telemedicineprojectserver;
 
+import POJOs.AgeName;
 import POJOs.Answer;
 import POJOs.Phydata;
 import POJOs.UserInfo;
@@ -18,8 +19,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,6 +41,7 @@ public class ServerUserThreads implements Runnable {
         ArrayList<UserPassword> userPasswordList = null;
         //UserInfo userInfo = null;
         UserPassword userPassword = null;
+        AgeName ageName = null;
         Phydata phydata = null;
         //PrintWriter printWriter = null;
         OutputStream outputStream = null;
@@ -72,13 +72,13 @@ public class ServerUserThreads implements Runnable {
                     if (userPassword.getUserName().contains(Utils.NEWUN)) {
                         userPassword = Utils.takeOutCode(userPassword);
                         if (!Utils.checkUserNameList(userPassword.getUserName(), userPasswordList)) {
-                            Answer answerServer = new Answer("ERR");
+                            Answer answerServer = new Answer(Answer.ERR);
                             answerServer.setAnswer(Answer.ERR);
                             System.out.println("le envia al client: " + answerServer.getAnswer());
                             objectOutputStream.writeObject(answerServer);
                         } else {
                             check = false;
-                            Answer answerServer = new Answer("VALID_USERNAME");
+                            Answer answerServer = new Answer(Answer.VALID_USERNAME);
                             answerServer.setAnswer(Answer.VALID_USERNAME);
                             System.out.println("le envia al client:" + answerServer.getAnswer());
                             // outputStream.flush();
@@ -109,6 +109,9 @@ public class ServerUserThreads implements Runnable {
                         encrypted.setUserName(encryptedUsername.toString());
                         encrypted.setPassword(encryptedPassword.toString());
                         PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList);*/
+                            Object tmp2;
+                            tmp2 = objectInputStream.readObject();
+                            ageName = (AgeName) tmp2;
                             PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
                             System.out.println("USER SAVED");
 
@@ -192,7 +195,6 @@ public class ServerUserThreads implements Runnable {
 
         return generatedPassword;
     }*/
-
     private static void releaseResources(BufferedReader bufferedReader,
             Socket socket) {
         try {
