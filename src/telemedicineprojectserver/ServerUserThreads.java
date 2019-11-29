@@ -49,8 +49,9 @@ public class ServerUserThreads implements Runnable {
         ObjectOutputStream objectOutputStream = null;
         ObjectInputStream objectInputStream = null;
         //Answer answerServer = new Answer("hola");
-        Object tmp, tmp2, tmp3;
+        Object tmp, tmp2, tmp3, tmp4;
         boolean check = true;
+        boolean measure = true;
         try {
             outputStream = socket.getOutputStream();
             objectOutputStream = new ObjectOutputStream(outputStream);
@@ -59,15 +60,8 @@ public class ServerUserThreads implements Runnable {
             try {
                 userInfoList = PersistenceOp.loadUserInfo(Utils.DIRECTORY, Utils.FILENAME);
                 userPasswordList = PersistenceOp.loadUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP);
-                System.out.println("Connection client created");
-
-                /*while ((tmp = objectInputStream.readObject()) != null) {
-                    userPassword = (UserPassword) tmp;
-                    System.out.println("Server Recieved:" + userPassword.toString());
-                }*/
+                System.out.println("Connection client created...");
                 while (check) {
-
-                    System.out.println("traza");
                     tmp = objectInputStream.readObject();
                     userPassword = (UserPassword) tmp;
                     if (userPassword.getUserName().contains(Utils.NEWUN)) {
@@ -75,49 +69,18 @@ public class ServerUserThreads implements Runnable {
                         if (!Utils.checkUserNameList(userPassword.getUserName(), userPasswordList)) {
                             Answer answerServer = new Answer(Answer.ERR);
                             answerServer.setAnswer(Answer.ERR);
-                            System.out.println("le envia al client: " + answerServer.getAnswer());
                             objectOutputStream.writeObject(answerServer);
                         } else {
                             check = false;
                             Answer answerServer = new Answer(Answer.VALID_USERNAME);
                             answerServer.setAnswer(Answer.VALID_USERNAME);
-                            System.out.println("le envia al client:" + answerServer.getAnswer());
-                            // outputStream.flush();
-                            //objectOutputStream.flush();
                             objectOutputStream.writeObject(answerServer);
-                            //PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
-                            //TO DO recived age and name;
-                            //System.out.println("ExitoSignUp");
-                            //String encryptedPassword=encodePassword(userPassword.getPassword()); //encryption of user and password
-                            //String encryptedUser = encodePassword(userPassword.getUserName());
-                            //UserPassword encrypted = null;
-                            //encrypted.setPassword(encryptedPassword);
-                            //encrypted.setUserName(encryptedUser);
-                            //PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList); //we save passwprd and username encrypted
-                            /* String algorithm = "AES/CBC/PKCS5Padding";
-                        Cipher cipher = Cipher.getInstance(algorithm);
-                        KeyGenerator key = KeyGenerator.getInstance(algorithm);
-                        SecureRandom secureRandom = new SecureRandom();
-                        int keyBitSize = 256;
-                        key.init(keyBitSize, secureRandom);
-                        SecretKey secretKey = key.generateKey();
-                        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-                        byte[] password = userPassword.getPassword().getBytes("UFT-8");
-                        byte[] username = userPassword.getUserName().getBytes("UFT-8");
-                        byte[] encryptedPassword = cipher.doFinal(password);
-                        byte[] encryptedUsername = cipher.doFinal(username);
-                        UserPassword encrypted = null;
-                        encrypted.setUserName(encryptedUsername.toString());
-                        encrypted.setPassword(encryptedPassword.toString());
-                        PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, encrypted, userPasswordList);*/
-
                             tmp2 = objectInputStream.readObject();
                             ageName = (AgeName) tmp2;
                             UserInfo userInfo = new UserInfo(userPassword, ageName.getName(), ageName.getAge());
-                            System.out.println("USerInfo:" + userInfo.toString());
                             PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
                             PersistenceOp.saveUserInfo(Utils.DIRECTORY, Utils.FILENAME, userInfo, userInfoList);
-                            System.out.println("USER SAVED");
+                            System.out.println("User saved...");
                         }
                     } else {
                         if (!Utils.checkCorrectPassword(userPassword.getUserName(),
@@ -130,27 +93,30 @@ public class ServerUserThreads implements Runnable {
 
                             objectOutputStream.writeObject(answerServer);
                         } else {
-                            //TODO
-                            //userInfoList = PersistenceOp.loadUserInfo(Utils.DIRECTORY, Utils.FILENAME);
-                            //UserInfo userInfo = Utils.getUserInfo(userPassword.getUserName(), userInfoList);
-                            System.out.println("ExitoSignIn");
-                            Answer answerServer = new Answer("VALID");
-                            answerServer.setAnswer(Answer.VALID);
-                            check = false;
+                            System.out.println("SignIn succeded...");
+                            Answer answerServer = new Answer(Answer.VALID);
                             System.out.println(Answer.VALID);
-                            System.out.println("le envia al client:" + answerServer.getAnswer());
-
                             objectOutputStream.writeObject(answerServer);
+                            check = false;
                         }
                     }
                 }
+                System.out.println("sale despuesde enviar");
+                while (true) {
+                    tmp3 = objectInputStream.readObject();
+                    phydata = (Phydata) tmp3;
+                    System.out.println("PHYDATA RECEIVED");
+                    //Utils.GraphPhydata(phydata.getAccRec());
+                    PersistenceOp.savePhydataUserInfo(Utils.DIRECTORY, Utils.FILENAME, phydata, userPassword, userInfoList);
+                    System.out.println("PHYDATA SAVED");
+                    tmp4 = objectInputStream.readObject();
+                    Answer response = (Answer) tmp4;
+                    if (response.getAnswer().equalsIgnoreCase(Answer.CLOSE)) {
+                        measure = false;
+                        //TODO close
+                    }
 
-                tmp3 = objectInputStream.readObject();
-                phydata = (Phydata) tmp3;
-                System.out.println("PHYDATA RECEIVED");
-                //Utils.GraphPhydata(phydata.getAccRec());
-                PersistenceOp.savePhydataUserInfo(Utils.DIRECTORY, Utils.FILENAME, phydata, userPassword, userInfoList);
-                System.out.println("PHYDATA SAVED");
+                }
 
             } catch (IOException ex) {
                 Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);

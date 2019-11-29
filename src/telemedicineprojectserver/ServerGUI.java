@@ -113,7 +113,7 @@ public class ServerGUI extends javax.swing.JFrame {
 
     private void stopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopActionPerformed
         password = jTextField1.getText();
-        if (password.equalsIgnoreCase("cierro")) {
+        if (password.equalsIgnoreCase("cierratesesamo")) {
             stopServer();
         } else {
             jTextField1.setBorder(new LineBorder(Color.red, 2));
