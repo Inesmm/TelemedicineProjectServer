@@ -117,6 +117,7 @@ public final class PersistenceOp {
                     UserPassword us = (UserPassword) it.next();
                     userPasswordEncr = encrypt(us);
                     objectOutputStream.writeObject(userPasswordEncr);
+
                 }
                 objectOutputStream.close();
                 fileOutputStream.close();

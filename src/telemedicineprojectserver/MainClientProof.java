@@ -5,17 +5,6 @@
  */
 package telemedicineprojectserver;
 
-import POJOs.UserInfo;
-import POJOs.UserPassword;
-import Persistence.PersistenceOp;
-import Persistence.Utils;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author juanb
@@ -44,23 +33,15 @@ public class MainClientProof {
         System.out.println("Fuera: " + Utils.checkUserNameList(userPassword.getUserName(), userPasswordList));
         PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
         System.out.println("cargado");*/
-        ArrayList<UserInfo> userInfoList = PersistenceOp.loadUserInfo(Utils.DIRECTORY, Utils.FILENAME);
+ /*ArrayList<UserInfo> userInfoList = PersistenceOp.loadUserInfo(Utils.DIRECTORY, Utils.FILENAME);
         UserPassword userPassword = new UserPassword("juan", "1234");
         UserInfo userInfo = new UserInfo(userPassword, "juan", 24);
         PersistenceOp.saveUserInfo(Utils.DIRECTORY, Utils.FILENAME, userInfo, userInfoList);
-        System.out.println("saccesfully saved");
+        System.out.println("saccesfully saved");*/
+        ServerGUI serverGUI = new ServerGUI();
+        serverGUI.setVisible(true);
+        serverGUI.startServer();
 
-    }
-
-    private static void releaseResources(PrintWriter printWriter, Socket socket) {
-
-        printWriter.close();
-
-        try {
-            socket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(MainClientProof.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
 }
