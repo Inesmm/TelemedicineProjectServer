@@ -25,6 +25,7 @@ public class ServerUser {
         try {
 
             ServerSocket serverSocket = new ServerSocket(9000);
+
             try {
                 while (true) {
                     //Thie executes when we have a client
