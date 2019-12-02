@@ -7,7 +7,6 @@ package Persistence;
 
 import POJOs.UserInfo;
 import POJOs.UserPassword;
-import static Persistence.PersistenceOp.getMD5;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -174,9 +173,9 @@ public final class Utils extends Object {
     public static boolean checkCorrectPassword(String userNametocheck, String passwordtocheck, ArrayList<UserPassword> userPasswordList) {
         int index = Utils.getArrayIndexUserPassword(userNametocheck, userPasswordList);
         UserPassword userPassword = userPasswordList.get(index);
-        String hashPasswordToCheck = getMD5(passwordtocheck);
+//        String hashPasswordToCheck = getMD5(passwordtocheck);
         if ((userPassword.getUserName().compareTo(userNametocheck) == 0)
-                && (userPassword.getPassword().compareTo(hashPasswordToCheck)) == 0) {
+                && (userPassword.getPassword().compareTo(passwordtocheck)) == 0) {
             return true;
         } else {
             return false;
