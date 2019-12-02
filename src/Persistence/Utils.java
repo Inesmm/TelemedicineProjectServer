@@ -172,16 +172,18 @@ public final class Utils extends Object {
 
     //RETURN TRUE IF IT IS CORRECT
     public static boolean checkCorrectPassword(String userNametocheck, String passwordtocheck, ArrayList<UserPassword> userPasswordList) {
+        System.out.println("USer"+userNametocheck);
+        System.out.println("PasstextPlano"+passwordtocheck);
         int index = Utils.getArrayIndexUserPassword(userNametocheck, userPasswordList);
         UserPassword userPassword = userPasswordList.get(index);
         String hashPasswordToCheck = getMD5(passwordtocheck);
-        if ((userPassword.getUserName().compareTo(userNametocheck) == 0)
-                && (userPassword.getPassword().compareTo(hashPasswordToCheck)) == 0) {
+        System.out.println("HashCheck"+hashPasswordToCheck);
+        if ((userPassword.getUserName().equals(userNametocheck))
+                && (userPassword.getPassword().equals(hashPasswordToCheck))) {
             return true;
         } else {
             return false;
         }
-
     }
 
     public static String charToString(char[] chain) {

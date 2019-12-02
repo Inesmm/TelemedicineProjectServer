@@ -89,10 +89,7 @@ public final class PersistenceOp {
     public static int saveUserPaswordList(String directory, String fileName,
             UserPassword userPassword, ArrayList<UserPassword> userpasswordList) {
 
-        UserPassword userPasswordEncr;
         try {
-            //Save user. (If there is no even file, it creates)
-            //if the USERNAME already exists returns -1, if not returns 0;
             File direct = new File(directory);
             File file = null;
             FileOutputStream fileOutputStream = null;
@@ -101,25 +98,24 @@ public final class PersistenceOp {
             try {
 
                 file = new File(directory, fileName);
-                //System.out.println("dentro:" + Utils.checkUserNameList(userPassword.getUserName(), userpasswordList));
                 if (!Utils.checkUserNameList(userPassword.getUserName(), userpasswordList)) {
                     System.out.println("indexraul: " + Utils.getArrayIndexUserPassword(userPassword.getUserName(), userpasswordList));
                     userpasswordList.remove(Utils.getArrayIndexUserPassword(userPassword.getUserName(), userpasswordList));
                     userpasswordList.add(userPassword);
                     return 1;
                 }
-                //System.out.println("traza2");
+
                 fileOutputStream = new FileOutputStream(file);
                 objectOutputStream = new ObjectOutputStream(fileOutputStream);
-
+                String hashPass = getMD5(userPassword.getPassword());
+                System.out.println("Hash"+hashPass);
+                userPassword = new UserPassword (userPassword.getUserName(), hashPass);
                 userpasswordList.add(userPassword);
                 Iterator<UserPassword> it = userpasswordList.iterator();
                 objectOutputStream.writeObject(userpasswordList.size());
                 while (it.hasNext()) {
                     UserPassword us = (UserPassword) it.next();
-                    userPasswordEncr = encrypt(us);
-                    objectOutputStream.writeObject(userPasswordEncr);
-
+                    objectOutputStream.writeObject(us);
                 }
                 objectOutputStream.close();
                 fileOutputStream.close();
@@ -150,7 +146,6 @@ public final class PersistenceOp {
             file = new File(directory, fileName);
             if (!file.exists()) {
                 file.createNewFile();
-
                 return usersInfoList;
             } else {
                 fileInputStream = new FileInputStream(file);
@@ -169,9 +164,7 @@ public final class PersistenceOp {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(PersistenceOp.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return usersInfoList;
-
     }
 
     public static ArrayList<UserPassword> loadUserPaswordList(String directory, String fileName) {
@@ -196,9 +189,7 @@ public final class PersistenceOp {
                 last = (int) objectInputStream.readObject();
                 for (int i = 0; i < last; i++) {
                     userPassword = (UserPassword) objectInputStream.readObject();
-                    userPassword = decrypt(userPassword);
                     userPasswordList.add(userPassword);
-
                 }
             }
             objectInputStream.close();
@@ -216,58 +207,24 @@ public final class PersistenceOp {
         return userPasswordList;
 
     }
-    
+
     public static String getMD5(String password){
-       
+
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             byte[] messageDigest = md.digest(password.getBytes());
 
             StringBuffer sb = new StringBuffer();
-            
+
             for(int i=0;i<messageDigest.length;i++){
                 sb.append(Integer.toHexString(0xff & messageDigest[i]));
             }
             return sb.toString();
-            
+
         } catch (NoSuchAlgorithmException ex) {
             throw new RuntimeException(ex);
     }
-  
+
    }
-
-    private static UserPassword encrypt(UserPassword encrypted) throws Exception {
-        Cipher cipher = Cipher.getInstance(algorithm);
-        SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("DES");
-        DESKeySpec keyspec = new DESKeySpec(key.getBytes());
-        SecretKey secretKey = secretKeyFactory.generateSecret(keyspec);
-
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-        byte[] password = encrypted.getPassword().getBytes("UTF8");
-        byte[] username = encrypted.getUserName().getBytes("UTF8");
-        byte[] encryptedPassword = cipher.doFinal(password);
-        byte[] encryptedUsername = cipher.doFinal(username);
-        String passEnc = new BASE64Encoder().encode(encryptedPassword);
-        String userEnc = new BASE64Encoder().encode(encryptedUsername);
-        UserPassword encryption = new UserPassword(userEnc, passEnc);
-        return encryption;
-    }
-
-    private static UserPassword decrypt(UserPassword decrypted) throws Exception {
-        Cipher cipher = Cipher.getInstance(algorithm);
-        SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("DES");
-        DESKeySpec keyspec = new DESKeySpec(key.getBytes());
-        SecretKey secretKey = secretKeyFactory.generateSecret(keyspec);
-
-        cipher.init(Cipher.DECRYPT_MODE, secretKey);
-        byte[] encryptedPass = new BASE64Decoder().decodeBuffer(decrypted.getPassword());
-        byte[] encryptedUser = new BASE64Decoder().decodeBuffer(decrypted.getUserName());
-        byte[] decryptedPass = cipher.doFinal(encryptedPass);
-        byte[] decryptedUser = cipher.doFinal(encryptedUser);
-        String decPass = new String(decryptedPass);
-        String decUser = new String(decryptedUser);
-        UserPassword decryption = new UserPassword(decUser, decPass);
-        return decryption;
-    }
 
 }

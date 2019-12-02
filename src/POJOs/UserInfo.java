@@ -20,7 +20,6 @@ public class UserInfo implements Serializable {
     private int age;
     private ArrayList phydataArray;
 
-    
     public UserInfo(UserPassword userPassword, String name, int age) {
         this.name = name;
         this.userPassword = userPassword;
@@ -73,6 +72,11 @@ public class UserInfo implements Serializable {
 
     public void setPhydataArray(ArrayList phydataArray) {
         this.phydataArray = phydataArray;
+    }
+
+    @Override
+    public String toString() {
+        return "UserInfo{" + "name=" + name + ", age=" + age + ", phydataArray=" + phydataArray + '}';
     }
 
 }

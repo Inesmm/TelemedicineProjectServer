@@ -85,12 +85,13 @@ public class ServerUserThreads implements Runnable {
                     } else {
                         if (!Utils.checkCorrectPassword(userPassword.getUserName(),
                                 userPassword.getPassword(), userPasswordList)) {
+                            
                             Answer answerServer = new Answer("ERROR");
-
+                            
                             answerServer.setAnswer(Answer.ERR);
                             System.out.println(Answer.ERR);
                             System.out.println("le envia al client:" + answerServer.getAnswer());
-
+                            System.out.println(userPassword);
                             objectOutputStream.writeObject(answerServer);
                         } else {
                             System.out.println("SignIn succeded...");
