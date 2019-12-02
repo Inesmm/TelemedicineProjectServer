@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -214,6 +216,25 @@ public final class PersistenceOp {
         return userPasswordList;
 
     }
+    
+    public static String getMD5(String password){
+       
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(password.getBytes());
+
+            StringBuffer sb = new StringBuffer();
+            
+            for(int i=0;i<messageDigest.length;i++){
+                sb.append(Integer.toHexString(0xff & messageDigest[i]));
+            }
+            return sb.toString();
+            
+        } catch (NoSuchAlgorithmException ex) {
+            throw new RuntimeException(ex);
+    }
+  
+   }
 
     private static UserPassword encrypt(UserPassword encrypted) throws Exception {
         Cipher cipher = Cipher.getInstance(algorithm);
