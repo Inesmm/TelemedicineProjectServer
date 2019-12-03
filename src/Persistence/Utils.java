@@ -20,12 +20,6 @@ import org.jfree.chart.plot.PlotOrientation;
 import static org.jfree.chart.ui.UIUtils.centerFrameOnScreen;
 import org.jfree.data.xy.DefaultXYDataset;
 
-/*import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartFrame;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import static org.jfree.chart.ui.UIUtils.centerFrameOnScreen;
-import org.jfree.data.xy.DefaultXYDataset;*/
 /**
  *
  * @author juanb
@@ -37,25 +31,6 @@ public final class Utils extends Object {
     public static final String DIRECTORY = "data";
     public static final String FILENAME = "UserInfo.dat";
     public static final String FILENAME_UP = "UserPassword.dat";
-
-    /* public static void GraphPhydata(int[][] dataRec) {
-        int row = dataRec.length;
-        int col = dataRec[0].length;
-        double[][] values = new double[row][col];
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
-                values[i][j] = Double.valueOf(dataRec[i][j]);
-            }
-        }
-        DefaultXYDataset dataset = new DefaultXYDataset();
-        dataset.addSeries("hola", values);
-        JFreeChart lineChart = ChartFactory.createXYLineChart("EMG", "Seconds", "Volts", dataset, PlotOrientation.VERTICAL, true, true, false);
-        ChartFrame panel = new ChartFrame("", lineChart);
-        panel.pack();
-        panel.setVisible(true);
-        centerFrameOnScreen(panel);
-
-    }*/
 
  /*public static boolean checkUserInfo(UserInfo userToCheck, ArrayList<UserInfo> userInfoList) {
         //TRUE if it doesn`t exist;
@@ -101,20 +76,6 @@ public final class Utils extends Object {
         return check;
     }
 
-    /*public static boolean checkUserName(String userName) {
-        //TRUE if it doesn`t exist;
-        ArrayList<UserInfo> userInfoList = PersistenceOp.loadUserInfo(DIRECTORY, FILENAME);
-        String loaduserName = null;
-        boolean check = true;
-        Iterator<UserInfo> it = userInfoList.iterator();
-        while (it.hasNext()) {
-            loaduserName = it.next().getUserName();
-            if (loaduserName.compareTo(userName) == 0) {
-                check = false;
-            }
-        }
-        return check;
-    }*/
     //return index where a PArticular USerNAme is Saved
     public static int getArrayIndexUserName(String userName, ArrayList<UserInfo> userInfoList) {
         UserInfo useInfo = null;

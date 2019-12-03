@@ -22,12 +22,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESKeySpec;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 /**
  *
