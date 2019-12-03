@@ -17,11 +17,21 @@ public class Phydata implements Serializable {
     private Date date;
     private int[][] eMGRec;
     private int[][] accRec;
+    private String symptons;
 
-    public Phydata(Date date, int[][] eMGRec, int[][] accRec) {
+    public Phydata(Date date, int[][] eMGRec, int[][] accRec, String symptons) {
         this.date = date;
         this.eMGRec = eMGRec;
         this.accRec = accRec;
+        this.symptons = symptons;
+    }
+
+    public String getSymptons() {
+        return symptons;
+    }
+
+    public void setSymptons(String symptons) {
+        this.symptons = symptons;
     }
 
     public Phydata() {
