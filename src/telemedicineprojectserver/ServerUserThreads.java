@@ -12,7 +12,6 @@ import POJOs.UserInfo;
 import POJOs.UserPassword;
 import Persistence.PersistenceOp;
 import Persistence.Utils;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -85,9 +84,9 @@ public class ServerUserThreads implements Runnable {
                     } else {
                         if (!Utils.checkCorrectPassword(userPassword.getUserName(),
                                 userPassword.getPassword(), userPasswordList)) {
-                            
+
                             Answer answerServer = new Answer("ERROR");
-                            
+
                             answerServer.setAnswer(Answer.ERR);
                             System.out.println(Answer.ERR);
                             System.out.println("le envia al client:" + answerServer.getAnswer());
@@ -124,6 +123,7 @@ public class ServerUserThreads implements Runnable {
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
+                releaseResources(objectInputStream, objectOutputStream, inputStream, outputStream, socket);
 
             }
         } catch (IOException ex) {
@@ -152,10 +152,10 @@ public class ServerUserThreads implements Runnable {
         }
         try {
             try {
-            outputStream.close();
-        } catch (IOException ex) {
-            Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
-        }
+                outputStream.close();
+            } catch (IOException ex) {
+                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            }
             socket.close();
         } catch (IOException ex) {
             Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);

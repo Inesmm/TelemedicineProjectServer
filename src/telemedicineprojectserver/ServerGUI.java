@@ -23,7 +23,6 @@ import javax.swing.border.LineBorder;
 public class ServerGUI extends javax.swing.JFrame {
 
     private ServerSocket serverSocket;
-    private Socket socket;
     private String password;
 
     /**
@@ -115,7 +114,10 @@ public class ServerGUI extends javax.swing.JFrame {
     private void stopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopActionPerformed
         password = jTextField1.getText();
         if (password.equalsIgnoreCase("cierratesesamo")) {
-            stopServer();
+            System.out.println("Stoping Server...");
+            releaseResourcesServer(serverSocket);
+            System.out.println("Server Close...");
+            System.exit(0);
         } else {
             jTextField1.setBorder(new LineBorder(Color.red, 2));
             JOptionPane.showMessageDialog(new JFrame(), "INCORRECT PASSWORD"
@@ -141,36 +143,25 @@ public class ServerGUI extends javax.swing.JFrame {
             try {
                 while (true) {
                     //Thie executes when we have a client
-                    socket = serverSocket.accept();
+                    Socket socket = serverSocket.accept();
                     System.out.println("New client..." + socket.isConnected());
                     new Thread(new ServerUserThreads(socket)).start();
                 }
             } finally {
-                releaseResourcesServer(serverSocket, socket);
+                releaseResourcesServer(serverSocket);
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(ServerUser.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ServerGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
-    public void stopServer() {
-        System.out.println("Stoping Server...");
-        releaseResourcesServer(serverSocket, socket);
-        System.out.println("Server Close...");
-        System.exit(0);
-    }
-
-    private static void releaseResourcesServer(ServerSocket serverSocket, Socket socket) {
-        if (socket != null) {
-
-        } else {
-            try {
-                serverSocket.close();
-            } catch (IOException ex) {
-                Logger.getLogger(ServerUser.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    private static void releaseResourcesServer(ServerSocket serverSocket) {
+        try {
+            serverSocket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(ServerGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
