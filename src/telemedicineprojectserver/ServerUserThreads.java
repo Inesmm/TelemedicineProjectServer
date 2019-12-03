@@ -85,12 +85,13 @@ public class ServerUserThreads implements Runnable {
                     } else {
                         if (!Utils.checkCorrectPassword(userPassword.getUserName(),
                                 userPassword.getPassword(), userPasswordList)) {
+                            
                             Answer answerServer = new Answer("ERROR");
-
+                            
                             answerServer.setAnswer(Answer.ERR);
                             System.out.println(Answer.ERR);
                             System.out.println("le envia al client:" + answerServer.getAnswer());
-
+                            System.out.println(userPassword);
                             objectOutputStream.writeObject(answerServer);
                         } else {
                             System.out.println("SignIn succeded...");
@@ -122,16 +123,6 @@ public class ServerUserThreads implements Runnable {
                 Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
-                //} catch (NoSuchAlgorithmException ex) {
-                //    Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
-                //} catch (NoSuchPaddingException ex) {
-                //    Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
-                //} catch (InvalidKeyException ex) {
-                //    Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
-                //} catch (IllegalBlockSizeException ex) {
-                //     Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
-                // } catch (BadPaddingException ex) {
-                //     Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
 
             }
@@ -142,40 +133,29 @@ public class ServerUserThreads implements Runnable {
         }
     }
 
-    /*public static String encodePassword(String passwordToEncode) { //Encryption of password and user
-        //This method is use to encode the pasword of the Client or Doctor.
-        String passwordToHash = passwordToEncode;
-        String generatedPassword = null;
+    private static void releaseResources(ObjectInputStream objectInputStream, ObjectOutputStream objectOutputStream,
+            InputStream inputStream, OutputStream outputStream, Socket socket) {
         try {
-            // Create MessageDigest instance for MD5
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            //Add password bytes to digest
-            md.update(passwordToHash.getBytes());
-            //Get the hash's bytes
-            byte[] bytes = md.digest();
-            //This bytes[] has bytes in decimal format;
-            //Convert it to hexadecimal format
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < bytes.length; i++) {
-                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-            }
-            //Get complete hashed password in hex format
-            generatedPassword = sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-        return generatedPassword;
-    }*/
-    private static void releaseResources(BufferedReader bufferedReader,
-            Socket socket) {
-        try {
-            bufferedReader.close();
+            objectInputStream.close();
         } catch (IOException ex) {
             Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         try {
+            objectOutputStream.close();
+        } catch (IOException ex) {
+            Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            inputStream.close();
+        } catch (IOException ex) {
+            Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            try {
+            outputStream.close();
+        } catch (IOException ex) {
+            Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+        }
             socket.close();
         } catch (IOException ex) {
             Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
