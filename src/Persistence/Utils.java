@@ -27,6 +27,7 @@ import org.jfree.data.xy.DefaultXYDataset;
 public final class Utils extends Object {
 
     //DIRECTORY AND FILENAME WHERE TO SAVE ALL THE DAT
+    public static final String FILENAME_DOC = "Doc.dat";
     public static final String NEWUN = "qwerty";
     public static final String DIRECTORY = "data";
     public static final String FILENAME = "UserInfo.dat";

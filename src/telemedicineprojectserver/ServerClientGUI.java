@@ -5,6 +5,7 @@
  */
 package telemedicineprojectserver;
 
+import POJOs.SocketUtils;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.IOException;
@@ -23,6 +24,7 @@ import javax.swing.border.LineBorder;
 public class ServerClientGUI extends javax.swing.JFrame {
 
     private ServerSocket serverSocket;
+    private ServerSocket serverSocket2;
     private String password;
 
     /**
@@ -151,14 +153,15 @@ public class ServerClientGUI extends javax.swing.JFrame {
 
         try {
 
-            serverSocket = new ServerSocket(9005);
+            serverSocket = new ServerSocket(9000);
             System.out.println("server Created...");
             try {
                 while (true) {
                     //Thie executes when we have a client
                     Socket socket = serverSocket.accept();
-                    System.out.println("New client..." + socket.isConnected());
-                    new Thread(new ServerClientThreads(socket)).start();
+                    SocketUtils socketUtils = new SocketUtils(socket);
+                    System.out.println("New client...");
+                    new Thread(new ServerClientThreads(socketUtils)).start();
                 }
             } finally {
                 releaseResourcesServer(serverSocket);
