@@ -88,7 +88,7 @@ public class SocketUtils {
     }
 
     public Object readObject() {
-        System.out.println("LEYENDO OBJETO");
+        System.out.println("Reading Object...");
 
         Object tmp = null;
         try {
@@ -102,7 +102,7 @@ public class SocketUtils {
     }
 
     public void writeObject(Object tmp) {
-        System.out.println("ESCRIBIENDO OBJETO");
+        System.out.println("Writing Object...");
         try {
             this.objectOutputStream.writeObject(tmp);
         } catch (IOException ex) {
@@ -142,6 +142,3 @@ public class SocketUtils {
 
     }
 }
-
-
-    

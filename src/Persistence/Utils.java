@@ -33,21 +33,6 @@ public final class Utils extends Object {
     public static final String FILENAME = "UserInfo.dat";
     public static final String FILENAME_UP = "UserPassword.dat";
 
-    /*public static boolean checkUserInfo(UserInfo userToCheck, ArrayList<UserInfo> userInfoList) {
-        //TRUE if it doesn`t exist;
-        String userNameStr = userToCheck.getUserName();
-        String loaduserName = null;
-        boolean check = true;
-        Iterator<UserInfo> it = userInfoList.iterator();
-        while (it.hasNext()) {
-            loaduserName = it.next().getUserName();
-            if (loaduserName.compareTo(userNameStr) == 0) {
-                check = false;
-
-            }
-        }
-        return check;
-    }*/
     //TRUE if it doesn´t exist
     public static boolean checkUserName(String userName, ArrayList<UserInfo> userInfoList) {
         //TRUE if it doesn`t exist;
@@ -63,8 +48,8 @@ public final class Utils extends Object {
         return check;
     }
 
+    //TRUE if it doesn`t exist;
     public static boolean checkUserNameList(String userName, ArrayList<UserPassword> userPasswordList) {
-        //TRUE if it doesn`t exist;
         String loaduserName = null;
         boolean check = true;
         Iterator<UserPassword> it = userPasswordList.iterator();
@@ -84,7 +69,6 @@ public final class Utils extends Object {
         while (it.hasNext()) {
             useInfo = it.next();
             if (useInfo.getUserPassword().getUserName().compareTo(userName) == 0) {
-                System.out.println("El usario esta:" + userInfoList.indexOf(useInfo));
                 return userInfoList.indexOf(useInfo);
             }
         }
@@ -134,12 +118,9 @@ public final class Utils extends Object {
 
     //RETURN TRUE IF IT IS CORRECT
     public static boolean checkCorrectPassword(String userNametocheck, String passwordtocheck, ArrayList<UserPassword> userPasswordList) {
-        System.out.println("USer" + userNametocheck);
-        System.out.println("PasstextPlano" + passwordtocheck);
         int index = Utils.getArrayIndexUserPassword(userNametocheck, userPasswordList);
         UserPassword userPassword = userPasswordList.get(index);
         String hashPasswordToCheck = getMD5(passwordtocheck);
-        System.out.println("HashCheck" + hashPasswordToCheck);
         if ((userPassword.getUserName().equals(userNametocheck))
                 && (userPassword.getPassword().equals(hashPasswordToCheck))) {
             return true;
@@ -194,7 +175,7 @@ public final class Utils extends Object {
             }
         }
         DefaultXYDataset dataset = new DefaultXYDataset();
-        dataset.addSeries("hola", values);
+        dataset.addSeries("values", values);
         JFreeChart lineChart = ChartFactory.createXYLineChart("EMG", "Seconds", "Volts", dataset, PlotOrientation.VERTICAL, true, true, false);
         ChartFrame panel = new ChartFrame("", lineChart);
         panel.pack();

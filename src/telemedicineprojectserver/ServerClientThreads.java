@@ -50,12 +50,10 @@ public class ServerClientThreads implements Runnable {
                 userPassword = Utils.takeOutCode(userPassword);
                 if (!Utils.checkUserNameList(userPassword.getUserName(), userPasswordList)) {
                     Answer answerServer = new Answer(Answer.ERR);
-                    answerServer.setAnswer(Answer.ERR);
                     socketUtils.writeObject(answerServer);
                 } else {
                     check = false;
                     Answer answerServer = new Answer(Answer.VALID_USERNAME);
-                    answerServer.setAnswer(Answer.VALID_USERNAME);
                     socketUtils.writeObject(answerServer);
                     tmp2 = socketUtils.readObject();
                     ageName = (AgeName) tmp2;
@@ -67,31 +65,22 @@ public class ServerClientThreads implements Runnable {
             } else {
                 if (!Utils.checkCorrectPassword(userPassword.getUserName(),
                         userPassword.getPassword(), userPasswordList)) {
-
-                    Answer answerServer = new Answer("ERROR");
-
-                    answerServer.setAnswer(Answer.ERR);
-                    System.out.println(Answer.ERR);
-                    System.out.println("le envia al client:" + answerServer.getAnswer());
-                    System.out.println(userPassword);
+                    Answer answerServer = new Answer(Answer.ERR);
                     socketUtils.writeObject(answerServer);
                 } else {
                     System.out.println("SignIn succeded...");
                     Answer answerServer = new Answer(Answer.VALID);
-                    System.out.println(Answer.VALID);
                     socketUtils.writeObject(answerServer);
                     check = false;
                 }
             }
         }
-        System.out.println("sale despuesde enviar");
         while (true) {
             tmp3 = socketUtils.readObject();
             phydata = (Phydata) tmp3;
-
-            System.out.println("PHYDATA RECEIVED");
+            System.out.println("phydata recieved...");
             PersistenceOp.savePhydataUserInfo(Utils.DIRECTORY, Utils.FILENAME, phydata, userPassword, userInfoList);
-            System.out.println("PHYDATA SAVED");
+            System.out.println("phydata recieved...");
             tmp4 = socketUtils.readObject();
             Answer response = (Answer) tmp4;
             if (response.getAnswer().equalsIgnoreCase(Answer.CLOSE)) {

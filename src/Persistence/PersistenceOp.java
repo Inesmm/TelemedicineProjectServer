@@ -33,10 +33,7 @@ public final class PersistenceOp {
     private static final byte[] array = new byte[8];
     private static final String key = new String(array, Charset.forName("UTF-8"));
 
-    //DIRECTORY AND FILENAME WHERE TO SAVE ALL THE DATA
     public static int saveUserInfo(String directory, String fileName, UserInfo user, ArrayList<UserInfo> usersInfoList) {
-        //Save user. (If there is no even file, it creates)
-        //if the USERNAME already exists returns -1, if not returns 0;
         File direct = new File(directory);
         File file = null;
         FileOutputStream fileOutputStream = null;
@@ -44,12 +41,11 @@ public final class PersistenceOp {
         try {
             file = new File(directory, fileName);
             if (!Utils.checkUserName(user.getUserPassword().getUserName(), usersInfoList)) {
-                System.out.println("indexines: " + Utils.getArrayIndexUserName(user.getUserPassword().getUserName(), usersInfoList));
                 usersInfoList.remove(Utils.getArrayIndexUserName(user.getUserPassword().getUserName(), usersInfoList));
                 usersInfoList.add(user);
                 return 1;
             }
-            System.out.println("indexjuan: " + Utils.getArrayIndexUserName(user.getUserPassword().getUserName(), usersInfoList));
+
             fileOutputStream = new FileOutputStream(file);
             objectOutputStream = new ObjectOutputStream(fileOutputStream);
             usersInfoList.add(user);
@@ -67,6 +63,7 @@ public final class PersistenceOp {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        System.out.println("Saving UserInfo...");
         return 1;
     }
 
@@ -74,36 +71,31 @@ public final class PersistenceOp {
             UserPassword userPassword, ArrayList<UserInfo> usersInfoList) {
         UserInfo userInfo = null;
         userInfo = Utils.getUserInfo(userPassword.getUserName(), usersInfoList);
-        System.out.println("Saless");
         userInfo.getPhydataArray().add(phydata);
         PersistenceOp.saveUserInfo(directory, filename, userInfo, usersInfoList);
-
+        System.out.println("Saving Physiological measures...");
     }
 
     public static int saveUserPaswordList(String directory, String fileName,
             UserPassword userPassword, ArrayList<UserPassword> userpasswordList) {
-
         try {
             File direct = new File(directory);
             File file = null;
             FileOutputStream fileOutputStream = null;
             ObjectOutputStream objectOutputStream = null;
-
             try {
 
                 file = new File(directory, fileName);
                 if (!Utils.checkUserNameList(userPassword.getUserName(), userpasswordList)) {
-                    System.out.println("indexraul: " + Utils.getArrayIndexUserPassword(userPassword.getUserName(), userpasswordList));
                     userpasswordList.remove(Utils.getArrayIndexUserPassword(userPassword.getUserName(), userpasswordList));
                     userpasswordList.add(userPassword);
                     return 1;
                 }
-
                 fileOutputStream = new FileOutputStream(file);
                 objectOutputStream = new ObjectOutputStream(fileOutputStream);
                 String hashPass = getMD5(userPassword.getPassword());
-                System.out.println("Hash"+hashPass);
-                userPassword = new UserPassword (userPassword.getUserName(), hashPass);
+                System.out.println("Hash" + hashPass);
+                userPassword = new UserPassword(userPassword.getUserName(), hashPass);
                 userpasswordList.add(userPassword);
                 Iterator<UserPassword> it = userpasswordList.iterator();
                 objectOutputStream.writeObject(userpasswordList.size());
@@ -113,7 +105,7 @@ public final class PersistenceOp {
                 }
                 objectOutputStream.close();
                 fileOutputStream.close();
-
+                System.out.println("Saving UserInfo...");
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
             } catch (IOException ex) {
@@ -158,6 +150,7 @@ public final class PersistenceOp {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(PersistenceOp.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println("Loading UserInfo...");
         return usersInfoList;
     }
 
@@ -197,12 +190,12 @@ public final class PersistenceOp {
         } catch (Exception ex) {
             Logger.getLogger(PersistenceOp.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        System.out.println("Loading Userpassword...");
         return userPasswordList;
 
     }
 
-    public static String getMD5(String password){
+    public static String getMD5(String password) {
 
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -210,15 +203,15 @@ public final class PersistenceOp {
 
             StringBuffer sb = new StringBuffer();
 
-            for(int i=0;i<messageDigest.length;i++){
+            for (int i = 0; i < messageDigest.length; i++) {
                 sb.append(Integer.toHexString(0xff & messageDigest[i]));
             }
             return sb.toString();
 
         } catch (NoSuchAlgorithmException ex) {
             throw new RuntimeException(ex);
-    }
+        }
 
-   }
+    }
 
 }
