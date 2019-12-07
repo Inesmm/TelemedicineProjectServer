@@ -9,7 +9,7 @@ package telemedicineprojectserver;
  *
  * @author juanb
  */
-public class MainClientProof {
+public class ServerClient {
 
     public static void main(String[] args) {
         /*try {
@@ -38,7 +38,7 @@ public class MainClientProof {
         UserInfo userInfo = new UserInfo(userPassword, "juan", 24);
         PersistenceOp.saveUserInfo(Utils.DIRECTORY, Utils.FILENAME, userInfo, userInfoList);
         System.out.println("saccesfully saved");*/
-        ServerGUI serverGUI = new ServerGUI();
+        ServerClientGUI serverGUI = new ServerClientGUI();
         serverGUI.setVisible(true);
         serverGUI.startServer();
 

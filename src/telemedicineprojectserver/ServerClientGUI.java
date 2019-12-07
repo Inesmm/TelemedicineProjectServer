@@ -20,7 +20,7 @@ import javax.swing.border.LineBorder;
  *
  * @author juanb
  */
-public class ServerGUI extends javax.swing.JFrame {
+public class ServerClientGUI extends javax.swing.JFrame {
 
     private ServerSocket serverSocket;
     private String password;
@@ -28,7 +28,7 @@ public class ServerGUI extends javax.swing.JFrame {
     /**
      * Creates new form UserFr
      */
-    public ServerGUI() {
+    public ServerClientGUI() {
         initComponents();
         this.setSize(new Dimension(800, 540));
         this.setLocationRelativeTo(null);
@@ -49,6 +49,7 @@ public class ServerGUI extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         stop = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -68,6 +69,12 @@ public class ServerGUI extends javax.swing.JFrame {
             }
         });
 
+        jLabel3.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("DOCTOR:");
+        jLabel3.setToolTipText("");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -82,13 +89,18 @@ public class ServerGUI extends javax.swing.JFrame {
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(355, 355, 355)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(221, 221, 221)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(179, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(115, 115, 115)
+                .addGap(35, 35, 35)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(37, 37, 37)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -129,6 +141,7 @@ public class ServerGUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JButton stop;
@@ -138,21 +151,21 @@ public class ServerGUI extends javax.swing.JFrame {
 
         try {
 
-            serverSocket = new ServerSocket(9000);
+            serverSocket = new ServerSocket(9005);
             System.out.println("server Created...");
             try {
                 while (true) {
                     //Thie executes when we have a client
                     Socket socket = serverSocket.accept();
                     System.out.println("New client..." + socket.isConnected());
-                    new Thread(new ServerUserThreads(socket)).start();
+                    new Thread(new ServerClientThreads(socket)).start();
                 }
             } finally {
                 releaseResourcesServer(serverSocket);
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(ServerGUI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ServerClientGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -161,7 +174,7 @@ public class ServerGUI extends javax.swing.JFrame {
         try {
             serverSocket.close();
         } catch (IOException ex) {
-            Logger.getLogger(ServerGUI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ServerClientGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }

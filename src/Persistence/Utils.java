@@ -25,14 +25,14 @@ import org.jfree.data.xy.DefaultXYDataset;
  * @author juanb
  */
 public final class Utils extends Object {
-    //DIRECTORY AND FILENAME WHERE TO SAVE ALL THE DATA
 
+    //DIRECTORY AND FILENAME WHERE TO SAVE ALL THE DAT
     public static final String NEWUN = "qwerty";
     public static final String DIRECTORY = "data";
     public static final String FILENAME = "UserInfo.dat";
     public static final String FILENAME_UP = "UserPassword.dat";
 
- /*public static boolean checkUserInfo(UserInfo userToCheck, ArrayList<UserInfo> userInfoList) {
+    /*public static boolean checkUserInfo(UserInfo userToCheck, ArrayList<UserInfo> userInfoList) {
         //TRUE if it doesn`t exist;
         String userNameStr = userToCheck.getUserName();
         String loaduserName = null;
@@ -133,12 +133,12 @@ public final class Utils extends Object {
 
     //RETURN TRUE IF IT IS CORRECT
     public static boolean checkCorrectPassword(String userNametocheck, String passwordtocheck, ArrayList<UserPassword> userPasswordList) {
-        System.out.println("USer"+userNametocheck);
-        System.out.println("PasstextPlano"+passwordtocheck);
+        System.out.println("USer" + userNametocheck);
+        System.out.println("PasstextPlano" + passwordtocheck);
         int index = Utils.getArrayIndexUserPassword(userNametocheck, userPasswordList);
         UserPassword userPassword = userPasswordList.get(index);
         String hashPasswordToCheck = getMD5(passwordtocheck);
-        System.out.println("HashCheck"+hashPasswordToCheck);
+        System.out.println("HashCheck" + hashPasswordToCheck);
         if ((userPassword.getUserName().equals(userNametocheck))
                 && (userPassword.getPassword().equals(hashPasswordToCheck))) {
             return true;

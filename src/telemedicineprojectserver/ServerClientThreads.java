@@ -26,11 +26,11 @@ import java.util.logging.Logger;
  *
  * @author juanb
  */
-public class ServerUserThreads implements Runnable {
+public class ServerClientThreads implements Runnable {
 
     Socket socket;
 
-    public ServerUserThreads(Socket socket) {
+    public ServerClientThreads(Socket socket) {
         this.socket = socket;
     }
 
@@ -105,10 +105,16 @@ public class ServerUserThreads implements Runnable {
                 while (true) {
                     tmp3 = objectInputStream.readObject();
                     phydata = (Phydata) tmp3;
+                    //Utils.GraphPhydata(phydata.getAccRec());
                     System.out.println("PHYDATA RECEIVED");
                     //Utils.GraphPhydata(phydata.getAccRec());
                     PersistenceOp.savePhydataUserInfo(Utils.DIRECTORY, Utils.FILENAME, phydata, userPassword, userInfoList);
                     System.out.println("PHYDATA SAVED");
+                    /*ArrayList<UserInfo> user = PersistenceOp.loadUserInfo(Utils.DIRECTORY, Utils.FILENAME);
+                    Object guu = user.get(0).getPhydataArray().get(0);
+                    Phydata ph = (Phydata) guu;
+                    Utils.GraphPhydata(ph.getAccRec());*/
+
                     tmp4 = objectInputStream.readObject();
                     Answer response = (Answer) tmp4;
                     if (response.getAnswer().equalsIgnoreCase(Answer.CLOSE)) {
@@ -119,15 +125,15 @@ public class ServerUserThreads implements Runnable {
                 }
 
             } catch (IOException ex) {
-                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ServerClientThreads.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
-                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ServerClientThreads.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
                 releaseResources(objectInputStream, objectOutputStream, inputStream, outputStream, socket);
 
             }
         } catch (IOException ex) {
-            Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ServerClientThreads.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             // printWriter.close();
         }
@@ -138,27 +144,27 @@ public class ServerUserThreads implements Runnable {
         try {
             objectInputStream.close();
         } catch (IOException ex) {
-            Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ServerClientThreads.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             objectOutputStream.close();
         } catch (IOException ex) {
-            Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ServerClientThreads.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             inputStream.close();
         } catch (IOException ex) {
-            Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ServerClientThreads.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             try {
                 outputStream.close();
             } catch (IOException ex) {
-                Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ServerClientThreads.class.getName()).log(Level.SEVERE, null, ex);
             }
             socket.close();
         } catch (IOException ex) {
-            Logger.getLogger(ServerUserThreads.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ServerClientThreads.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
