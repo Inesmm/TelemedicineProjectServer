@@ -27,7 +27,6 @@ import org.jfree.data.xy.DefaultXYDataset;
 public final class Utils extends Object {
 
     //DIRECTORY AND FILENAME WHERE TO SAVE ALL THE DAT
-    public static final String FILENAME_DOC = "Doc.dat";
     public static final String NEWUN = "qwerty";
     public static final String DIRECTORY = "data";
     public static final String FILENAME = "UserInfo.dat";
@@ -95,7 +94,14 @@ public final class Utils extends Object {
 
     public static UserInfo getUserInfo(String userName, ArrayList<UserInfo> userInfoList) {
         UserInfo userInfo = null;
-        int index = getArrayIndexUserName(userName, userInfoList);
+        int index = 0;
+        Iterator<UserInfo> it = userInfoList.iterator();
+        while (it.hasNext()) {
+            userInfo = it.next();
+            if (userInfo.getUserPassword().getUserName().compareTo(userName) == 0) {
+                index = userInfoList.indexOf(userInfo);
+            }
+        }
         return (UserInfo) userInfoList.get(index);
     }
 

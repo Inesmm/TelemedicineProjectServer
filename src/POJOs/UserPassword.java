@@ -39,7 +39,7 @@ public class UserPassword implements Serializable {
 
     @Override
     public String toString() {
-        return "UserPassword{" + "userName=" + userName + ", password=" + password + '}';
+        return "UserName: " + userName + ", password: " + password;
     }
 
 }

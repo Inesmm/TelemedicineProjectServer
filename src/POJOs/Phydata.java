@@ -6,6 +6,7 @@
 package POJOs;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -26,19 +27,33 @@ public class Phydata implements Serializable {
         this.symptons = symptons;
     }
 
+    public Phydata(Date date) {
+        this.date = date;
+        this.eMGRec = null;
+        this.accRec = null;
+        this.symptons = null;
+    }
+
+    public Phydata(Date date, int[][] eMGRec, int[][] accRec) {
+        this.date = date;
+        this.eMGRec = eMGRec;
+        this.accRec = accRec;
+        this.symptons = null;
+    }
+
+    public Phydata() {
+        this.date = new Date();
+        this.eMGRec = null;
+        this.accRec = null;
+        this.symptons = null;
+    }
+
     public String getSymptons() {
         return symptons;
     }
 
     public void setSymptons(String symptons) {
         this.symptons = symptons;
-    }
-
-    public Phydata() {
-        this.date = null;
-        this.eMGRec = null;
-        this.accRec = null;
-
     }
 
     public Date getDate() {
@@ -66,6 +81,28 @@ public class Phydata implements Serializable {
 
     public void setAccRec(int[][] accRec) {
         this.accRec = accRec;
+    }
+
+    public String printAllData() {
+        String data = ""; // this object contains the current date value
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        data = data + "Date: " + formatter.format(date) + "\n";
+        if (this.symptons != null) {
+            data = data + "\tSym: " + this.symptons + "\n";
+        } else {
+            data = data + "\tSym: NO\n";
+        }
+        if (this.accRec != null) {
+            data = data + "\tAcc: " + "There is value for Acc\n";
+        } else {
+            data = data + "\tAcc:NO\n";
+        }
+        if (this.eMGRec != null) {
+            data = data + "\tEMG: " + "There is value for EMG";
+        } else {
+            data = data + "\tEMG:NO";
+        }
+        return data;
     }
 
 }

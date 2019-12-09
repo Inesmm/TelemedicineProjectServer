@@ -42,12 +42,12 @@ public final class PersistenceOp {
             file = new File(directory, fileName);
             if (!Utils.checkUserName(user.getUserPassword().getUserName(), usersInfoList)) {
                 usersInfoList.remove(Utils.getArrayIndexUserName(user.getUserPassword().getUserName(), usersInfoList));
-                usersInfoList.add(user);
-                return 1;
+                //return 1;
             }
 
             fileOutputStream = new FileOutputStream(file);
             objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            //usersInfoList.remove(Utils.getArrayIndexUserName(user.getUserPassword().getUserName(), usersInfoList));
             usersInfoList.add(user);
             Iterator<UserInfo> it = usersInfoList.iterator();
             objectOutputStream.writeObject(usersInfoList.size());
@@ -71,9 +71,32 @@ public final class PersistenceOp {
             UserPassword userPassword, ArrayList<UserInfo> usersInfoList) {
         UserInfo userInfo = null;
         userInfo = Utils.getUserInfo(userPassword.getUserName(), usersInfoList);
-        userInfo.getPhydataArray().add(phydata);
+        ArrayList<Phydata> phydataList = userInfo.getPhydataArray();
+        /*System.out.println("Antes de guardar");
+        Iterator it3 = phydataList.iterator();
+        Object tmp3;
+        Phydata ph2;
+        while (it3.hasNext()) {
+            tmp3 = it3.next();
+            ph2 = (Phydata) tmp3;
+            System.out.println("holapesicola" + phydata.getSymptons());
+
+        }
+        ArrayList<Phydata> phydataList2 = userInfo.getPhydataArray();
+        phydataList.add(phydata);
+        userInfo.setPhydataArray(phydataList);
+        Object tmp;
+        System.out.println("Soy muy fan");
+        phydataList2 = userInfo.getPhydataArray();
+        Iterator it = phydataList2.iterator();
+        Phydata ph;
+        while (it.hasNext()) {
+            tmp = it.next();
+            ph = (Phydata) tmp;
+            System.out.println("Dentro bucle" + phydata.getSymptons());
+        }*/
         PersistenceOp.saveUserInfo(directory, filename, userInfo, usersInfoList);
-        System.out.println("Saving Physiological measures...");
+
     }
 
     public static int saveUserPaswordList(String directory, String fileName,

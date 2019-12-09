@@ -35,6 +35,7 @@ public class ServerClientThreads implements Runnable {
         ArrayList<UserInfo> userInfoList = null;
         ArrayList<UserPassword> userPasswordList = null;
         UserPassword userPassword = null;
+        UserInfo userInfo = null;
         AgeName ageName = null;
         Phydata phydata = null;
         Object tmp, tmp2, tmp3, tmp4;
@@ -42,7 +43,6 @@ public class ServerClientThreads implements Runnable {
         boolean measure = true;
         userInfoList = PersistenceOp.loadUserInfo(Utils.DIRECTORY, Utils.FILENAME);
         userPasswordList = PersistenceOp.loadUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP);
-        System.out.println("Connection client created...");
         while (check) {
             tmp = socketUtils.readObject();
             userPassword = (UserPassword) tmp;
@@ -57,10 +57,9 @@ public class ServerClientThreads implements Runnable {
                     socketUtils.writeObject(answerServer);
                     tmp2 = socketUtils.readObject();
                     ageName = (AgeName) tmp2;
-                    UserInfo userInfo = new UserInfo(userPassword, ageName.getName(), ageName.getAge());
+                    userInfo = new UserInfo(userPassword, ageName.getName(), ageName.getAge());
                     PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
-                    PersistenceOp.saveUserInfo(Utils.DIRECTORY, Utils.FILENAME, userInfo, userInfoList);
-                    System.out.println("User saved...");
+                    //PersistenceOp.saveUserInfo(Utils.DIRECTORY, Utils.FILENAME, userInfo, userInfoList);
                 }
             } else {
                 if (!Utils.checkCorrectPassword(userPassword.getUserName(),
@@ -68,27 +67,37 @@ public class ServerClientThreads implements Runnable {
                     Answer answerServer = new Answer(Answer.ERR);
                     socketUtils.writeObject(answerServer);
                 } else {
-                    System.out.println("SignIn succeded...");
                     Answer answerServer = new Answer(Answer.VALID);
                     socketUtils.writeObject(answerServer);
                     check = false;
                 }
             }
         }
-        while (true) {
+        while (measure) {
+            System.out.println("Ahora que");
+            System.out.println("After Sign IN/UP");
+            if (userInfo == null) {
+                userInfo = Utils.getUserInfo(userPassword.getUserName(), userInfoList);
+            }
             tmp3 = socketUtils.readObject();
             phydata = (Phydata) tmp3;
-            System.out.println("phydata recieved...");
-            PersistenceOp.savePhydataUserInfo(Utils.DIRECTORY, Utils.FILENAME, phydata, userPassword, userInfoList);
-            System.out.println("phydata recieved...");
+            System.out.println("los datos:");
+            System.out.println(phydata.printAllData());
+            userInfo.getPhydataArray().add(phydata);
+            PersistenceOp.saveUserInfo(Utils.DIRECTORY, Utils.FILENAME, userInfo, userInfoList);
+            /*System.out.println("EL USER:");
+            System.out.println(userInfo.printAll());
+            userInfo.getPhydataArray().add(phydata);
+            System.out.println("Despues de meterlo");
+            System.out.println(userInfo.printAll());
+            PersistenceOp.saveUserInfo(Utils.DIRECTORY, Utils.FILENAME, userInfo, userInfoList);*/
             tmp4 = socketUtils.readObject();
             Answer response = (Answer) tmp4;
             if (response.getAnswer().equalsIgnoreCase(Answer.CLOSE)) {
                 measure = false;
-                releaseResources(socketUtils);
             }
-
         }
+        releaseResources(socketUtils);
     }
 
     private static void releaseResources(SocketUtils socketUtils) {

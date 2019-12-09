@@ -7,26 +7,40 @@ package POJOs;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 
-/**
+/*
  *
  * @author juanb
  */
 public class UserInfo implements Serializable {
 ////
 
+    private ArrayList<Phydata> phydataArray;
     private UserPassword userPassword;
     private String name;
     private int age;
-    private ArrayList phydataArray;
+
+    public ArrayList<Phydata> getPhydataArray() {
+        return phydataArray;
+    }
+
+    public void setPhydataArray(ArrayList<Phydata> phydataArray) {
+        this.phydataArray = phydataArray;
+    }
 
     public UserInfo(UserPassword userPassword, String name, int age) {
         this.name = name;
         this.userPassword = userPassword;
         this.age = age;
+        this.phydataArray = new ArrayList<Phydata>();
+    }
 
-        this.phydataArray = new ArrayList();
-        System.out.println("ArrayList: " + this.phydataArray.size());
+    public UserInfo(UserPassword userPassword, String name, int age, ArrayList<Phydata> phydataArray) {
+        this.name = name;
+        this.userPassword = userPassword;
+        this.age = age;
+        this.phydataArray = phydataArray;
 
     }
 
@@ -66,17 +80,19 @@ public class UserInfo implements Serializable {
         this.age = age;
     }
 
-    public ArrayList getPhydataArray() {
-        return phydataArray;
-    }
+    public String printAll() {
+        String print = this.userPassword.toString() + "\n";
+        Object tmp;
+        Phydata phydata = null;
+        Iterator it = this.phydataArray.iterator();
+        while (it.hasNext()) {
+            tmp = it.next();
+            phydata = (Phydata) tmp;
+            print = print + phydata.printAllData() + "\n";
 
-    public void setPhydataArray(ArrayList phydataArray) {
-        this.phydataArray = phydataArray;
-    }
+        }
+        return print;
 
-    @Override
-    public String toString() {
-        return "UserInfo{" + "name=" + name + ", age=" + age + ", phydataArray=" + phydataArray + '}';
     }
 
 }
