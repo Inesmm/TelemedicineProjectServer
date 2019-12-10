@@ -113,29 +113,43 @@ public class SocketUtils {
     public void releaseResources() {
         System.out.println("Releasing Resources...");
         try {
-            this.objectOutputStream.close();
-        } catch (IOException ex) {
-            Logger.getLogger(SocketUtils.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            this.outputStream.close();
-        } catch (IOException ex) {
-            Logger.getLogger(SocketUtils.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            this.objectInputStream.close();
-        } catch (IOException ex) {
-            Logger.getLogger(SocketUtils.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            if (objectOutputStream != null) {
+                this.objectOutputStream.close();
+            }
 
+        } catch (IOException ex) {
+
+            Logger.getLogger(SocketUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
         try {
-            this.inputStream.close();
+            if (outputStream != null) {
+                this.outputStream.close();
+            }
 
         } catch (IOException ex) {
             Logger.getLogger(SocketUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            this.socket.close();
+            if (objectInputStream != null) {
+                this.objectInputStream.close();
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(SocketUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            if (inputStream != null) {
+                this.inputStream.close();
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(SocketUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            if (socket != null) {
+                this.socket.close();
+            }
         } catch (IOException ex) {
             Logger.getLogger(SocketUtils.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -13,10 +13,7 @@ import POJOs.UserInfo;
 import POJOs.UserPassword;
 import Persistence.PersistenceOp;
 import Persistence.Utils;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -75,60 +72,20 @@ public class ServerClientThreads implements Runnable {
         }
         while (measure) {
             userInfoList = PersistenceOp.loadUserInfo(Utils.DIRECTORY, Utils.FILENAME);
-            System.out.println("Ahora que");
-            System.out.println("After Sign IN/UP");
             if (userInfo == null) {
                 userInfo = Utils.getUserInfo(userPassword.getUserName(), userInfoList);
             }
             tmp3 = socketUtils.readObject();
             phydata = (Phydata) tmp3;
-            System.out.println("los datos:");
-            System.out.println(phydata.printAllData());
             userInfo.getPhydataArray().add(phydata);
             PersistenceOp.saveUserInfo(Utils.DIRECTORY, Utils.FILENAME, userInfo, userInfoList);
-            /*System.out.println("EL USER:");
-            System.out.println(userInfo.printAll());
-            userInfo.getPhydataArray().add(phydata);
-            System.out.println("Despues de meterlo");
-            System.out.println(userInfo.printAll());
-            PersistenceOp.saveUserInfo(Utils.DIRECTORY, Utils.FILENAME, userInfo, userInfoList);*/
             tmp4 = socketUtils.readObject();
             Answer response = (Answer) tmp4;
             if (response.getAnswer().equalsIgnoreCase(Answer.CLOSE)) {
                 measure = false;
             }
         }
-        releaseResources(socketUtils);
-    }
-
-    private static void releaseResources(SocketUtils socketUtils) {
-        try {
-
-            socketUtils.getObjectInputStream().close();
-        } catch (IOException ex) {
-            Logger.getLogger(ServerClientThreads.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            socketUtils.getObjectOutputStream().close();
-        } catch (IOException ex) {
-            Logger.getLogger(ServerClientThreads.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            socketUtils.getInputStream().close();
-        } catch (IOException ex) {
-            Logger.getLogger(ServerClientThreads.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            try {
-                socketUtils.getOutputStream().close();
-            } catch (IOException ex) {
-                Logger.getLogger(ServerClientThreads.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            socketUtils.getSocket().close();
-        } catch (IOException ex) {
-            Logger.getLogger(ServerClientThreads.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        socketUtils.releaseResources();
     }
 
 }
