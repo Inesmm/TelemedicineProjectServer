@@ -59,7 +59,7 @@ public class ServerClientThreads implements Runnable {
                     ageName = (AgeName) tmp2;
                     userInfo = new UserInfo(userPassword, ageName.getName(), ageName.getAge());
                     PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
-                    //PersistenceOp.saveUserInfo(Utils.DIRECTORY, Utils.FILENAME, userInfo, userInfoList);
+                    PersistenceOp.saveUserInfo(Utils.DIRECTORY, Utils.FILENAME, userInfo, userInfoList);
                 }
             } else {
                 if (!Utils.checkCorrectPassword(userPassword.getUserName(),
@@ -74,6 +74,7 @@ public class ServerClientThreads implements Runnable {
             }
         }
         while (measure) {
+            userInfoList = PersistenceOp.loadUserInfo(Utils.DIRECTORY, Utils.FILENAME);
             System.out.println("Ahora que");
             System.out.println("After Sign IN/UP");
             if (userInfo == null) {
