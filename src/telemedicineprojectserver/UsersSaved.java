@@ -15,7 +15,7 @@ import java.util.Iterator;
  *
  * @author juanb
  */
-public class prof2 {
+public class UsersSaved {
 
     public static void main(String[] args) {
         ArrayList<UserInfo> userInfoList2 = new ArrayList<UserInfo>();
