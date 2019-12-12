@@ -43,10 +43,6 @@ public final class PersistenceOp {
             if (!Utils.checkUserName(user.getUserPassword().getUserName(), usersInfoList)) {
                 usersInfoList.remove(Utils.getArrayIndexUserName(user.getUserPassword().getUserName(), usersInfoList));
                 //return 1;
-            }else{
-                String hashPass = getMD5(user.getUserPassword().getPassword());
-                UserPassword userPassword = new UserPassword(user.getUserPassword().getUserName(), hashPass);
-                user = new UserInfo(userPassword, hashPass, user.getAge()); //userpassword, name age
             }
 
             fileOutputStream = new FileOutputStream(file);
