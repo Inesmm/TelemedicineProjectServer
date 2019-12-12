@@ -88,7 +88,9 @@ public class UserInfo implements Serializable {
         while (it.hasNext()) {
             tmp = it.next();
             phydata = (Phydata) tmp;
-            print = print + phydata.printAllData() + "\n";
+            if (phydata != null) {
+                print = print + phydata.printAllData() + "\n";
+            }
 
         }
         return print;
