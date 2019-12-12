@@ -48,6 +48,10 @@ public final class PersistenceOp {
             fileOutputStream = new FileOutputStream(file);
             objectOutputStream = new ObjectOutputStream(fileOutputStream);
             //usersInfoList.remove(Utils.getArrayIndexUserName(user.getUserPassword().getUserName(), usersInfoList));
+                String hashPass = getMD5(user.getUserPassword().getPassword());
+                UserPassword userPassword = new UserPassword(user.getUserPassword().getUserName(), hashPass);
+                System.out.println("Hash" + hashPass);
+                user = new UserInfo(userPassword, hashPass, user.getAge()); //userpassword, name age
             usersInfoList.add(user);
             Iterator<UserInfo> it = usersInfoList.iterator();
             objectOutputStream.writeObject(usersInfoList.size());
