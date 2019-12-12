@@ -54,7 +54,7 @@ public class ServerClientThreads implements Runnable {
                     socketUtils.writeObject(answerServer);
                     tmp2 = socketUtils.readObject();
                     ageName = (AgeName) tmp2;
-                    userInfo = new UserInfo(userPassword, ageName.getName(), ageName.getAge());
+                    userInfo = new UserInfo(userPassword.getUserName(), ageName.getName(), ageName.getAge());
                     PersistenceOp.saveUserPaswordList(Utils.DIRECTORY, Utils.FILENAME_UP, userPassword, userPasswordList);
                     PersistenceOp.saveUserInfo(Utils.DIRECTORY, Utils.FILENAME, userInfo, userInfoList);
                 }

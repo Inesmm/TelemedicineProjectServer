@@ -40,8 +40,8 @@ public final class PersistenceOp {
         ObjectOutputStream objectOutputStream = null;
         try {
             file = new File(directory, fileName);
-            if (!Utils.checkUserName(user.getUserPassword().getUserName(), usersInfoList)) {
-                usersInfoList.remove(Utils.getArrayIndexUserName(user.getUserPassword().getUserName(), usersInfoList));
+            if (!Utils.checkUserName(user.getUserName(), usersInfoList)) {
+                usersInfoList.remove(Utils.getArrayIndexUserName(user.getUserName(), usersInfoList));
                 //return 1;
             }
 

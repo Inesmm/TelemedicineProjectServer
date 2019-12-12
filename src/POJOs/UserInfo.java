@@ -17,7 +17,7 @@ public class UserInfo implements Serializable {
 ////
 
     private ArrayList<Phydata> phydataArray;
-    private UserPassword userPassword;
+    private String userName;
     private String name;
     private int age;
 
@@ -29,27 +29,27 @@ public class UserInfo implements Serializable {
         this.phydataArray = phydataArray;
     }
 
-    public UserInfo(UserPassword userPassword, String name, int age) {
+    public UserInfo(String userName, String name, int age) {
         this.name = name;
-        this.userPassword = userPassword;
+        this.userName = userName;
         this.age = age;
         this.phydataArray = new ArrayList<Phydata>();
     }
 
-    public UserInfo(UserPassword userPassword, String name, int age, ArrayList<Phydata> phydataArray) {
+    public UserInfo(String userName, String name, int age, ArrayList<Phydata> phydataArray) {
         this.name = name;
-        this.userPassword = userPassword;
+        this.userName = userName;
         this.age = age;
         this.phydataArray = phydataArray;
 
     }
 
-    public UserPassword getUserPassword() {
-        return userPassword;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUserPassword(UserPassword userPassword) {
-        this.userPassword = userPassword;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public UserInfo() {
@@ -81,7 +81,7 @@ public class UserInfo implements Serializable {
     }
 
     public String printAll() {
-        String print = this.userPassword.toString() + "\n";
+        String print = this.userName + "\n";
         Object tmp;
         Phydata phydata = null;
         Iterator it = this.phydataArray.iterator();
